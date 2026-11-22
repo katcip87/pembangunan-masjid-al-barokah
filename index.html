@@ -31,15 +31,18 @@
       background-color: var(--bg);
       color: var(--text);
       line-height: 1.6;
+      width: 100%;
     }
 
-    /* Navbar Rata Kiri & Sejajar dengan Logo */
+    /* Navbar Mengambang di Paling Atas Saat Scroll */
     nav {
       background-color: var(--primary-dark);
       position: sticky;
       top: 0;
-      z-index: 100;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      z-index: 200;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.14);
+      width: 100%;
     }
 
     .nav-container {
@@ -119,6 +122,7 @@
     /* Konten Utama */
     main {
       max-width: 820px;
+      width: 100%;
       margin: 1.5rem auto;
       padding: 0 1rem;
       display: grid;
@@ -130,7 +134,8 @@
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 1.25rem;
-      scroll-margin-top: 5rem;
+      scroll-margin-top: 4.5rem;
+      min-width: 0;
     }
 
     h2 {
@@ -153,46 +158,126 @@
     }
 
     /* Kotak Donasi */
+    .donasi-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      margin-top: 0.75rem;
+    }
+
+    @media (min-width: 640px) {
+      .donasi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
     .donasi-box {
       background-color: var(--primary-light);
       border-radius: 10px;
       padding: 1rem;
-      margin-top: 0.75rem;
+      min-width: 0;
     }
 
-    .btn-donasi {
-      display: inline-block;
+    .qris-box {
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem;
+      text-align: center;
+      min-width: 0;
+    }
+
+    /* Ringkasan & Kontrol Transparansi */
+    .transparansi-summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 0.75rem;
       margin-top: 0.75rem;
-      background-color: var(--primary);
-      color: #ffffff;
-      text-decoration: none;
-      padding: 0.65rem 1.2rem;
-      border-radius: 8px;
-      font-weight: 600;
+      margin-bottom: 0.85rem;
+    }
+
+    .summary-card {
+      background-color: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
+      min-width: 0;
+    }
+
+    .summary-label {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .summary-value {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-top: 0.15rem;
+      word-break: break-word;
+    }
+
+    .transparansi-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-bottom: 0.65rem;
+    }
+
+    .transparansi-toolbar input,
+    .transparansi-toolbar select {
+      font-family: inherit;
       font-size: 0.9rem;
+      padding: 0.55rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background-color: var(--surface);
+      color: var(--text);
+      max-width: 100%;
+    }
+
+    .transparansi-toolbar input {
+      flex: 1 1 180px;
+      min-width: 0;
+    }
+
+    .transparansi-status {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
     }
 
     /* Tabel Transparansi */
     .table-wrap {
+      width: 100%;
       overflow-x: auto;
-      margin-top: 0.5rem;
+      -webkit-overflow-scrolling: touch;
+      margin-top: 0.25rem;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
+      min-width: 640px;
     }
 
     th, td {
       text-align: left;
-      padding: 0.6rem 0.75rem;
+      padding: 0.6rem 0.7rem;
       border-bottom: 1px solid var(--border);
+      vertical-align: top;
     }
 
     th {
       background-color: var(--primary-light);
       color: var(--primary);
+      white-space: nowrap;
+    }
+
+    .num {
+      text-align: right;
+      white-space: nowrap;
     }
 
     /* Progress Bar */
@@ -224,7 +309,7 @@
     /* Galeri */
     .gallery-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
       gap: 0.75rem;
       margin-top: 0.5rem;
     }
@@ -241,6 +326,7 @@
       padding: 0.5rem;
       font-size: 0.85rem;
       color: var(--muted);
+      min-width: 0;
     }
 
     .gallery-item img {
@@ -304,9 +390,9 @@
         Salurkan infak dan wakaf terbaik Anda untuk mendukung pembangunan dan kemakmuran Masjid Al-Barokah.
       </p>
 
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-top: 0.75rem;">
+      <div class="donasi-grid">
         <!-- Transfer Bank -->
-        <div class="donasi-box" style="margin-top: 0;">
+        <div class="donasi-box">
           <p style="font-size: 0.85rem; color: var(--muted); margin-bottom: 0.2rem;">Transfer Bank Resmi:</p>
           <p style="font-size: 1.05rem; font-weight: 700; color: var(--primary);">BANK MANDIRI</p>
           <p id="no-rek" style="font-size: 1.25rem; font-weight: 700; letter-spacing: 0.5px; margin: 0.2rem 0;">1340031912743</p>
@@ -317,7 +403,7 @@
         </div>
 
         <!-- Donasi Cepat QRIS -->
-        <div style="background-color: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; text-align: center;">
+        <div class="qris-box">
           <p style="font-size: 0.9rem; font-weight: 700; color: var(--primary); margin-bottom: 0.2rem;">Donasi Cepat QRIS</p>
           <p style="font-size: 0.82rem; color: var(--muted); margin-bottom: 0.65rem;">MASJID AL BAROKAH &bull; NMID: ID1025453093722</p>
           <img src="qris-al-barokah.jpg" alt="QRIS Donasi Masjid Al Barokah" style="max-width: 220px; width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border); display: block; margin: 0 auto 0.65rem;">
@@ -331,37 +417,47 @@
       </div>
     </section>
 
-      </div>
-    </section>
-
-    </section>
-
-
     <section id="transparansi">
       <h2>Transparansi Dana</h2>
-      <p>Ringkasan laporan pemasukan dan pengeluaran dana pembangunan masjid:</p>
+      <p>Rekap data donasi yang terhubung otomatis dari Google Sheets:</p>
+
+      <div class="transparansi-summary">
+        <div class="summary-card">
+          <div class="summary-label">Total Nominal Tercatat</div>
+          <div class="summary-value" id="totalNominal">Rp 0</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-label">Jumlah Baris Ditampilkan</div>
+          <div class="summary-value" id="totalRows">0</div>
+        </div>
+      </div>
+
+      <div class="transparansi-toolbar">
+        <input type="search" id="searchInput" placeholder="Cari nama, alamat, atau barang...">
+        <select id="jenisFilter">
+          <option value="">Semua Jenis</option>
+        </select>
+      </div>
+
+      <div class="transparansi-status" id="statusText">Memuat data donasi...</div>
+
       <div class="table-wrap">
         <table>
           <thead>
             <tr>
-              <th>Keterangan</th>
-              <th>Nominal</th>
+              <th>No</th>
+              <th>Nama</th>
+              <th class="num">Nominal</th>
+              <th>Jenis</th>
+              <th>Alamat</th>
+              <th>Nama Barang</th>
+              <th>Satuan</th>
+              <th class="num">Volume</th>
+              <th class="num">Harga Satuan</th>
+              <th>Tanggal</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td>Total Donasi Masuk</td>
-              <td>Rp 0</td>
-            </tr>
-            <tr>
-              <td>Total Pengeluaran Material &amp; Tukang</td>
-              <td>Rp 0</td>
-            </tr>
-            <tr>
-              <td><strong>Saldo Kas Saat Ini</strong></td>
-              <td><strong>Rp 0</strong></td>
-            </tr>
-          </tbody>
+          <tbody id="donasiBody"></tbody>
         </table>
       </div>
     </section>
@@ -402,6 +498,7 @@
   <footer>
     &copy; 2026 Panitia Pembangunan Masjid Al-Barokah Tanjungkerta.
   </footer>
+
   <script>
     function salinRekening(btn) {
       const norek = document.getElementById('no-rek').innerText;
@@ -413,19 +510,206 @@
         }, 2000);
       });
     }
-  </script>
-  <script>
-    function salinRekening(btn) {
-      const norek = document.getElementById('no-rek').innerText;
-      navigator.clipboard.writeText(norek).then(() => {
-        const teksAsli = btn.innerText;
-        btn.innerText = 'Nomor Tersalin!';
-        setTimeout(() => {
-          btn.innerText = teksAsli;
-        }, 2000);
+
+    const CSV_URL =
+      "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0PbZGpmP46zhEaPFcueYKlMcgaMigCpLW7wYzbcxj7_K9cY1945fCJnAaOgqVNdO5sHxWYmovpau-/pub?output=csv";
+
+    const statusText = document.getElementById("statusText");
+    const donasiBody = document.getElementById("donasiBody");
+    const totalNominalEl = document.getElementById("totalNominal");
+    const totalRowsEl = document.getElementById("totalRows");
+    const searchInput = document.getElementById("searchInput");
+    const jenisFilter = document.getElementById("jenisFilter");
+
+    let allRows = [];
+
+    function parseCSV(text) {
+      const rows = [];
+      let row = [];
+      let cell = "";
+      let inQuotes = false;
+
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        const nextChar = text[i + 1];
+
+        if (inQuotes) {
+          if (char === '"' && nextChar === '"') {
+            cell += '"';
+            i++;
+          } else if (char === '"') {
+            inQuotes = false;
+          } else {
+            cell += char;
+          }
+        } else {
+          if (char === '"') {
+            inQuotes = true;
+          } else if (char === ",") {
+            row.push(cell.trim());
+            cell = "";
+          } else if (char === "\r" && nextChar === "\n") {
+            row.push(cell.trim());
+            rows.push(row);
+            row = [];
+            cell = "";
+            i++;
+          } else if (char === "\n" || char === "\r") {
+            row.push(cell.trim());
+            rows.push(row);
+            row = [];
+            cell = "";
+          } else {
+            cell += char;
+          }
+        }
+      }
+
+      if (cell.length > 0 || row.length > 0) {
+        row.push(cell.trim());
+        rows.push(row);
+      }
+
+      return rows;
+    }
+
+    function parseNumber(val) {
+      if (!val) return 0;
+      const cleaned = String(val).replace(/[^0-9.-]+/g, "");
+      const num = Number(cleaned);
+      return Number.isFinite(num) ? num : 0;
+    }
+
+    function formatRupiah(num) {
+      return new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        maximumFractionDigits: 0
+      }).format(num);
+    }
+
+    function populateJenisFilter(rows) {
+      const uniqueJenis = [...new Set(rows.map((r) => r.jenis).filter(Boolean))];
+      uniqueJenis.sort((a, b) => a.localeCompare(b, "id"));
+
+      jenisFilter.innerHTML = '<option value="">Semua Jenis</option>';
+      uniqueJenis.forEach((jenis) => {
+        const opt = document.createElement("option");
+        opt.value = jenis;
+        opt.textContent = jenis;
+        jenisFilter.appendChild(opt);
       });
     }
+
+    function renderTable() {
+      const keyword = searchInput.value.trim().toLowerCase();
+      const selectedJenis = jenisFilter.value;
+
+      const filtered = allRows.filter((item) => {
+        const matchesJenis = !selectedJenis || item.jenis === selectedJenis;
+        const searchable = [
+          item.nama,
+          item.jenis,
+          item.alamat,
+          item.namaBarang,
+          item.tanggal
+        ]
+          .join(" ")
+          .toLowerCase();
+        const matchesSearch = !keyword || searchable.includes(keyword);
+        return matchesJenis && matchesSearch;
+      });
+
+      const sumNominal = filtered.reduce((acc, item) => acc + item.nominalNum, 0);
+      totalNominalEl.textContent = formatRupiah(sumNominal);
+      totalRowsEl.textContent = filtered.length;
+
+      if (filtered.length === 0) {
+        donasiBody.innerHTML =
+          '<tr><td colspan="10" style="text-align:center; padding:18px;">Tidak ada data yang cocok.</td></tr>';
+        return;
+      }
+
+      donasiBody.innerHTML = filtered
+        .map((item, idx) => {
+          return `
+            <tr>
+              <td>${idx + 1}</td>
+              <td>${escapeHTML(item.nama)}</td>
+              <td class="num">${item.nominalNum > 0 ? formatRupiah(item.nominalNum) : escapeHTML(item.nominalRaw)}</td>
+              <td>${escapeHTML(item.jenis)}</td>
+              <td>${escapeHTML(item.alamat)}</td>
+              <td>${escapeHTML(item.namaBarang)}</td>
+              <td>${escapeHTML(item.satuan)}</td>
+              <td class="num">${escapeHTML(item.volume)}</td>
+              <td class="num">${escapeHTML(item.hargaSatuan)}</td>
+              <td>${escapeHTML(item.tanggal)}</td>
+            </tr>
+          `;
+        })
+        .join("");
+    }
+
+    function escapeHTML(str) {
+      return String(str ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    async function loadDonasi() {
+      try {
+        const response = await fetch(CSV_URL);
+        if (!response.ok) {
+          throw new Error("Gagal mengambil data CSV (HTTP " + response.status + ")");
+        }
+
+        const csvText = await response.text();
+        const rawRows = parseCSV(csvText);
+
+        allRows = rawRows
+          .slice(1)
+          .filter((cols) => cols.some((cell) => cell !== ""))
+          .map((cols) => {
+            const nama = cols[0] || "";
+            const nominalRaw = cols[1] || "";
+            const jenis = cols[2] || "";
+            const alamat = cols[3] || "";
+            const namaBarang = cols[4] || "";
+            const satuan = cols[5] || "";
+            const volume = cols[6] || "";
+            const hargaSatuan = cols[7] || "";
+            const tanggal = cols[8] || "";
+
+            return {
+              nama,
+              nominalRaw,
+              nominalNum: parseNumber(nominalRaw),
+              jenis,
+              alamat,
+              namaBarang,
+              satuan,
+              volume,
+              hargaSatuan,
+              tanggal
+            };
+          });
+
+        populateJenisFilter(allRows);
+        renderTable();
+        statusText.textContent = "Data berhasil dimuat dari Google Sheets.";
+      } catch (err) {
+        statusText.textContent = "Terjadi kesalahan: " + err.message;
+      }
+    }
+
+    searchInput.addEventListener("input", renderTable);
+    jenisFilter.addEventListener("change", renderTable);
+
+    loadDonasi();
   </script>
 
 </body>
-</html>
+            </html>
+  
