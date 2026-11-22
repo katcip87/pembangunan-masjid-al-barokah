@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Profil Masjid Al-Barokah</title>
+  <title>Masjid Al-Barokah</title>
   <style>
     :root {
       --bg: #f4f7f5;
       --surface: #ffffff;
       --primary: #14532d;
+      --primary-dark: #0f3f22;
       --primary-light: #dcfce7;
       --text: #1f2937;
       --muted: #4b5563;
@@ -21,6 +22,10 @@
       padding: 0;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       font-family: system-ui, -apple-system, sans-serif;
       background-color: var(--bg);
@@ -28,6 +33,41 @@
       line-height: 1.6;
     }
 
+    /* Navbar */
+    nav {
+      background-color: var(--primary-dark);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-container {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 0.75rem 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .nav-container a {
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      padding: 0.4rem 0.75rem;
+      border-radius: 6px;
+      transition: background-color 0.2s;
+    }
+
+    .nav-container a:hover,
+    .nav-container a:focus {
+      background-color: var(--primary);
+    }
+
+    /* Header */
     header {
       background-color: var(--primary);
       color: #ffffff;
@@ -45,6 +85,7 @@
       opacity: 0.9;
     }
 
+    /* Konten Utama */
     main {
       max-width: 820px;
       margin: 1.5rem auto;
@@ -58,6 +99,7 @@
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 1.25rem;
+      scroll-margin-top: 4.5rem;
     }
 
     h2 {
@@ -76,16 +118,12 @@
       margin-bottom: 0.4rem;
     }
 
-    .kontak-item {
-      margin-bottom: 0.5rem;
-      color: var(--muted);
-    }
-
+    /* Kotak Donasi */
     .donasi-box {
       background-color: var(--primary-light);
       border-radius: 10px;
       padding: 1rem;
-      margin-top: 0.5rem;
+      margin-top: 0.75rem;
     }
 
     .btn-donasi {
@@ -94,9 +132,88 @@
       background-color: var(--primary);
       color: #ffffff;
       text-decoration: none;
-      padding: 0.7rem 1.25rem;
+      padding: 0.65rem 1.2rem;
       border-radius: 8px;
       font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    /* Tabel Transparansi */
+    .table-wrap {
+      overflow-x: auto;
+      margin-top: 0.5rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 0.6rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background-color: var(--primary-light);
+      color: var(--primary);
+    }
+
+    /* Progress Bar */
+    .progress-item {
+      margin-bottom: 0.9rem;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 10px;
+      background-color: var(--border);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background-color: var(--primary);
+    }
+
+    /* Galeri */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.75rem;
+      margin-top: 0.5rem;
+    }
+
+    .gallery-item {
+      background-color: var(--bg);
+      border: 1px dashed var(--muted);
+      border-radius: 8px;
+      aspect-ratio: 4 / 3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 8px;
     }
 
     footer {
@@ -109,52 +226,107 @@
 </head>
 <body>
 
+  <nav>
+    <div class="nav-container">
+      <a href="#profil">Profil</a>
+      <a href="#donasi">Donasi</a>
+      <a href="#transparansi">Transparansi</a>
+      <a href="#progres">Progres</a>
+      <a href="#gallery">Galeri</a>
+    </div>
+  </nav>
+
   <header>
     <h1>Masjid Al-Barokah</h1>
     <p>Pusat Ibadah, Dakwah, dan Kegiatan Sosial Masyarakat</p>
   </header>
 
   <main>
-    <section id="sejarah">
-      <h2>Sejarah Singkat</h2>
+    <section id="profil">
+      <h2>Profil Masjid</h2>
       <p>
-        Masjid Al-Barokah didirikan atas swadaya warga setempat sebagai sarana ibadah harian,
-        pembinaan generasi muda, dan pusat kegiatan kemasyarakatan. Seiring waktu, masjid terus
-        berkembang untuk memenuhi kebutuhan jamaah.
+        Masjid Al-Barokah berlokasi di Jl. Babakan Dampyang Gantar, Blok Kedungkacip, RT 13 RW 04,
+        Desa Tanjungkerta, Kec. Kroya, Kab. Indramayu. Masjid ini menjadi pusat ibadah, pembinaan
+        generasi muda, dan kegiatan kemasyarakatan warga sekitar.
       </p>
-    </section>
-
-    <section id="kegiatan">
-      <h2>Kegiatan Rutin</h2>
-      <ul>
-        <li><strong>Shalat Berjamaah &amp; Kajian Subuh:</strong> Setiap hari setelah shalat Subuh.</li>
-        <li><strong>TPA / Taman Pendidikan Al-Qur'an:</strong> Sore hari untuk anak-anak.</li>
-        <li><strong>Kajian Rutin Pekanan:</strong> Pembahasan tafsir, fiqih, dan akhlak.</li>
-        <li><strong>Bakti Sosial &amp; Santunan:</strong> Kegiatan sosial berkala bagi warga sekitar.</li>
-      </ul>
     </section>
 
     <section id="donasi">
-      <h2>Informasi Donasi</h2>
+      <h2>Donasi Pembangunan</h2>
       <p>
-        Dukungan jamaah dan dermawan sangat membantu operasional serta pengembangan fasilitas masjid.
+        Salurkan infak dan wakaf terbaik Anda untuk mendukung pembangunan dan kemakmuran Masjid Al-Barokah.
       </p>
       <div class="donasi-box">
-        <p><strong>Rekening Donasi:</strong> Bank Contoh — 0000-00-000000-0 a.n. DKM Masjid Al-Barokah</p>
-        <a class="btn-donasi" href="#kontak">Konfirmasi &amp; Info Donasi</a>
+        <p><strong>Rekening Resmi:</strong> Bank Contoh — 0000-00-000000-0 a.n. Panitia Pembangunan Masjid Al-Barokah</p>
+        <p><strong>WhatsApp Panitia:</strong> 0838-2111-8706</p>
+        <a class="btn-donasi" href="https://wa.me/6283821118706" target="_blank">Konfirmasi Donasi via WA</a>
       </div>
     </section>
 
-    <section id="kontak">
-      <h2>Kontak &amp; Lokasi</h2>
-      <p class="kontak-item"><strong>Alamat:</strong> Jl. Contoh No. 123, Kelurahan, Kecamatan, Kota/Kabupaten</p>
-      <p class="kontak-item"><strong>Telepon / WhatsApp DKM:</strong> 0812-0000-0000</p>
-      <p class="kontak-item"><strong>Email:</strong> sekretariat@masjidalbarokah.example</p>
+    <section id="transparansi">
+      <h2>Transparansi Dana</h2>
+      <p>Ringkasan laporan pemasukan dan pengeluaran dana pembangunan masjid:</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Keterangan</th>
+              <th>Nominal</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Total Donasi Masuk</td>
+              <td>Rp 0</td>
+            </tr>
+            <tr>
+              <td>Total Pengeluaran Material &amp; Tukang</td>
+              <td>Rp 0</td>
+            </tr>
+            <tr>
+              <td><strong>Saldo Kas Saat Ini</strong></td>
+              <td><strong>Rp 0</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="progres">
+      <h2>Progres Pembangunan</h2>
+      <div class="progress-item">
+        <div class="progress-label">
+          <span>1. Pembongkaran Masjid Lama</span>
+          <span>0%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 0%;"></div>
+        </div>
+      </div>
+      <div class="progress-item">
+        <div class="progress-label">
+          <span>2. Pekerjaan Pondasi &amp; Struktur</span>
+          <span>0%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 0%;"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="gallery">
+      <h2>Galeri Dokumentasi</h2>
+      <div class="gallery-grid">
+        <div class="gallery-item">Foto Kondisi Awal</div>
+        <div class="gallery-item">Foto Kerja Bakti</div>
+        <div class="gallery-item">Foto Pengiriman Material</div>
+        <div class="gallery-item">Desain Rencana Masjid</div>
+      </div>
     </section>
   </main>
 
   <footer>
-    &copy; 2026 Masjid Al-Barokah. Seluruh hak cipta dilindungi.
+    &copy; 2026 Panitia Pembangunan Masjid Al-Barokah.
   </footer>
 
 </body>
