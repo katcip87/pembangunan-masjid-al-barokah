@@ -33,7 +33,7 @@
       line-height: 1.6;
     }
 
-        /* Navbar Rata Sejajar dengan Logo */
+    /* Navbar Rata Kiri & Sejajar dengan Logo */
     nav {
       background-color: var(--primary-dark);
       position: sticky;
@@ -97,20 +97,6 @@
     .nav-links a:focus {
       background-color: var(--primary);
     }
- {
-      color: #ffffff;
-      text-decoration: none;
-      font-size: 0.9rem;
-      font-weight: 500;
-      padding: 0.4rem 0.7rem;
-      border-radius: 6px;
-      transition: background-color 0.2s;
-    }
-
-    .nav-links a:hover,
-    .nav-links a:focus {
-      background-color: var(--primary);
-    }
 
     /* Header */
     header {
@@ -155,12 +141,15 @@
       padding-bottom: 0.35rem;
     }
 
-    ul {
-      padding-left: 1.2rem;
+    .arab-bismillah {
+      font-size: 1.35rem;
+      text-align: center;
+      margin-bottom: 0.75rem;
+      line-height: 1.9;
     }
 
-    li {
-      margin-bottom: 0.4rem;
+    .profil-paragraf {
+      margin-bottom: 0.75rem;
     }
 
     /* Kotak Donasi */
@@ -294,10 +283,18 @@
   <main>
     <section id="profil">
       <h2>Profil Masjid</h2>
+      <p class="arab-bismillah" dir="rtl" lang="ar">
+        بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+      </p>
+      <p class="profil-paragraf">
+        Selama 36 tahun berdiri, masjid ini telah menjadi pusat ibadah harian, pembinaan generasi muda,
+        serta ruang kebersamaan warga sekitar.
+      </p>
       <p>
-        Masjid Al-Barokah berlokasi di Jl. Babakan Dampyang Gantar, Blok Kedungkacip, RT 13 RW 04,
-        Desa Tanjungkerta, Kec. Kroya, Kab. Indramayu. Masjid ini menjadi pusat ibadah, pembinaan
-        generasi muda, dan kegiatan kemasyarakatan warga sekitar.
+        Kondisi bangunan masjid sudah menua dan membutuhkan pembaruan menyeluruh agar tetap aman, nyaman,
+        dan memadai untuk menampung jamaah yang terus bertambah. Oleh karena itu, panitia dan warga
+        bersepakat melaksanakan <strong>rehab total</strong> demi menghadirkan fasilitas ibadah yang lebih
+        kokoh dan representatif bagi generasi mendatang.
       </p>
     </section>
 
@@ -306,12 +303,39 @@
       <p>
         Salurkan infak dan wakaf terbaik Anda untuk mendukung pembangunan dan kemakmuran Masjid Al-Barokah.
       </p>
-      <div class="donasi-box">
-        <p><strong>Rekening Resmi:</strong> Bank Contoh — 0000-00-000000-0 a.n. Panitia Pembangunan Masjid Al-Barokah</p>
-        <p><strong>WhatsApp Panitia:</strong> 0838-2111-8706</p>
-        <a class="btn-donasi" href="https://wa.me/6283821118706" target="_blank">Konfirmasi Donasi via WA</a>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-top: 0.75rem;">
+        <!-- Transfer Bank -->
+        <div class="donasi-box" style="margin-top: 0;">
+          <p style="font-size: 0.85rem; color: var(--muted); margin-bottom: 0.2rem;">Transfer Bank Resmi:</p>
+          <p style="font-size: 1.05rem; font-weight: 700; color: var(--primary);">BANK MANDIRI</p>
+          <p id="no-rek" style="font-size: 1.25rem; font-weight: 700; letter-spacing: 0.5px; margin: 0.2rem 0;">1340031912743</p>
+          <p style="margin-bottom: 0.75rem;"><strong>a.n. DULKARIM (Bendahara)</strong></p>
+          <button type="button" onclick="salinRekening(this)" style="background-color: #ffffff; color: var(--primary); border: 1.5px solid var(--primary); padding: 0.65rem 1rem; border-radius: 8px; font-weight: 600; font-size: 0.9rem; cursor: pointer;">
+            Salin No. Rekening
+          </button>
+        </div>
+
+        <!-- Donasi Cepat QRIS -->
+        <div style="background-color: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; text-align: center;">
+          <p style="font-size: 0.9rem; font-weight: 700; color: var(--primary); margin-bottom: 0.2rem;">Donasi Cepat QRIS</p>
+          <p style="font-size: 0.82rem; color: var(--muted); margin-bottom: 0.65rem;">MASJID AL BAROKAH &bull; NMID: ID1025453093722</p>
+          <img src="qris-al-barokah.jpg" alt="QRIS Donasi Masjid Al Barokah" style="max-width: 220px; width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border); display: block; margin: 0 auto 0.65rem;">
+          <a href="qris-al-barokah.jpg" download="qris-al-barokah.jpg" style="display: inline-block; font-size: 0.85rem; font-weight: 600; color: var(--primary); text-decoration: none; border: 1px solid var(--primary); padding: 0.45rem 0.85rem; border-radius: 8px;">
+            Unduh Gambar QRIS
+          </a>
+          <p style="font-size: 0.85rem; color: var(--text); margin-top: 0.65rem;">
+            Informasi donasi dan pembangunan; 083821110706
+          </p>
+        </div>
       </div>
     </section>
+
+      </div>
+    </section>
+
+    </section>
+
 
     <section id="transparansi">
       <h2>Transparansi Dana</h2>
@@ -378,6 +402,30 @@
   <footer>
     &copy; 2026 Panitia Pembangunan Masjid Al-Barokah Tanjungkerta.
   </footer>
+  <script>
+    function salinRekening(btn) {
+      const norek = document.getElementById('no-rek').innerText;
+      navigator.clipboard.writeText(norek).then(() => {
+        const teksAsli = btn.innerText;
+        btn.innerText = 'Nomor Tersalin!';
+        setTimeout(() => {
+          btn.innerText = teksAsli;
+        }, 2000);
+      });
+    }
+  </script>
+  <script>
+    function salinRekening(btn) {
+      const norek = document.getElementById('no-rek').innerText;
+      navigator.clipboard.writeText(norek).then(() => {
+        const teksAsli = btn.innerText;
+        btn.innerText = 'Nomor Tersalin!';
+        setTimeout(() => {
+          btn.innerText = teksAsli;
+        }, 2000);
+      });
+    }
+  </script>
 
 </body>
 </html>
