@@ -1,0 +1,2327 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="artifact-type" content="dashboard">
+  <meta name="design-style" content="terracotta">
+  <title>Pembangunan Masjid Al-Barokah — Donasi &amp; Transparansi Anggaran</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,600&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
+
+  <style>
+    :root {
+      color-scheme: light;
+
+      /* 1 & 2. Base Terracotta Architectural System adapted to Hijau Zamrud & Aksen Emas */
+      --background: #f8f5ee;
+      --surface-container-low: #f1ede2;
+      --surface-container: #e8e2d3;
+      --surface-container-high: #ddd5c2;
+      --surface-paper: #fffdf8;
+
+      /* Ink */
+      --on-surface: #15241d;
+      --on-surface-variant: #44554c;
+
+      /* Borders & Rules */
+      --outline: #9b7d3e;
+      --outline-variant: #d9cfb8;
+
+      /* Accents: Hijau Zamrud (Emerald Green) & Emas (Gold) */
+      --primary: #0f5c43;
+      --primary-hover: #0b4734;
+      --primary-deep: #093b2b;
+      --on-primary: #ffffff;
+      --on-primary-deep: #f7f4ec;
+      --primary-container: #e0f0ea;
+      --on-primary-container: #0a3e2d;
+
+      --secondary: #8c6216;
+      --gold-bright: #d4a644;
+      --gold-soft: #f5e6be;
+      --tertiary: #8c6216;
+      --tertiary-container: #f7ecd2;
+      --on-tertiary-container: #634309;
+
+      /* Semantic */
+      --positive: #15633f;
+      --positive-bg: #dcf2e7;
+      --warning: #9a5b13;
+      --warning-bg: #faebd0;
+      --error: #b82929;
+      --on-error: #ffffff;
+      --neutral-bg: #e9e4d7;
+      --neutral-ink: #4b554f;
+
+      /* Focus */
+      --focus: #0f5c43;
+
+      /* Data series */
+      --data-1: #0f5c43;
+      --data-2: #c5912c;
+      --data-3: #466d60;
+      --data-context: #b8b09c;
+
+      /* Fonts */
+      --font-headline: 'Cormorant Garamond', Georgia, serif;
+      --font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
+      --font-label: 'Plus Jakarta Sans', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      /* Type scale (Dashboard / Portal) */
+      --display-size: clamp(2rem, 1.35rem + 2.4vw, 3.15rem);
+      --headline-size: clamp(1.45rem, 1.15rem + 1.1vw, 2.05rem);
+      --subhead-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+      --body-size: clamp(0.9375rem, 0.9rem + 0.15vw, 1rem);
+      --label-size: 0.75rem;
+
+      /* Shape */
+      --rounded: 0.5rem;
+      --rounded-lg: 0.875rem;
+      --rounded-arch: 28px 28px 8px 8px;
+      --rounded-full: 9999px;
+
+      /* Style effects */
+      --soft-shadow: 0 4px 18px rgb(15 45 33 / 0.05);
+      --soft-shadow-raised: 0 10px 30px rgb(15 45 33 / 0.10);
+      --floating-shadow: 0 12px 32px rgb(9 59 43 / 0.24);
+      --warm-hairline: 1px solid var(--outline-variant);
+      --brass-rule: 1px solid var(--outline);
+      --brass-gradient: linear-gradient(90deg, var(--outline-variant), var(--gold-bright), var(--outline-variant));
+      --emerald-gradient: linear-gradient(135deg, var(--primary-deep) 0%, var(--primary) 100%);
+      --gold-border-soft: 1px solid var(--gold-bright);
+
+      /* Spacing scale */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2.5rem;
+      --space-2xl: 4rem;
+
+      /* Motion */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --dur-micro: 120ms;
+      --dur-short: 220ms;
+      --dur-long: 420ms;
+    }
+
+    /* Base Reset */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      overflow-x: clip;
+      margin: 0;
+      padding: 0;
+      background-color: var(--background);
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      font-size: var(--body-size);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    header { position: static !important; }
+    button, input, select, textarea { font-family: inherit; }
+
+    :focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    /* Layout Shell */
+    .site-header {
+      background: var(--surface-paper);
+      border-bottom: 2px solid var(--outline-variant);
+    }
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: var(--space-md) var(--space-lg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-lg);
+      flex-wrap: wrap;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      cursor: pointer;
+      background: none;
+      border: 0;
+      padding: 0;
+      text-align: left;
+      color: inherit;
+    }
+    .brand-emblem {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--rounded);
+      background: var(--emerald-gradient);
+      color: var(--gold-soft);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      border: var(--gold-border-soft);
+    }
+    .brand-title {
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: 1.375rem;
+      line-height: 1.1;
+      color: var(--on-surface);
+      display: block;
+    }
+    .brand-subtitle {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--secondary);
+      display: block;
+      margin-top: 2px;
+    }
+
+    /* Primary Tab Navigation */
+    .main-nav {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+      flex-wrap: wrap;
+    }
+    .nav-tab {
+      min-height: 44px;
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--rounded-full);
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--on-surface-variant);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color var(--dur-short) var(--ease-out),
+                  color var(--dur-short) var(--ease-out),
+                  box-shadow var(--dur-short) var(--ease-out);
+      white-space: nowrap;
+    }
+    .nav-tab:hover {
+      background: var(--surface-container-low);
+      color: var(--primary);
+    }
+    .nav-tab[aria-selected="true"] {
+      background: var(--primary);
+      color: var(--on-primary);
+      box-shadow: var(--soft-shadow);
+    }
+
+    /* Main Container */
+    .page-grid {
+      display: grid;
+      gap: var(--space-xl);
+      padding: var(--space-lg);
+      max-width: 1200px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+    .page-grid * { min-width: 0; }
+
+    /* Dynamic View Switching */
+    .view-section {
+      display: none;
+      animation: viewReveal var(--dur-long) var(--ease-out) forwards;
+    }
+    .view-section.is-active {
+      display: grid;
+      gap: var(--space-xl);
+    }
+    @keyframes viewReveal {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Typography Helpers */
+    .kicker {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--secondary);
+      margin: 0 0 var(--space-xs) 0;
+    }
+    .section-title {
+      font-family: var(--font-headline);
+      font-weight: 600;
+      font-size: var(--headline-size);
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+      color: var(--on-surface);
+      margin: 0;
+    }
+    .section-title em {
+      font-style: italic;
+      color: var(--primary);
+    }
+    .section-lede {
+      color: var(--on-surface-variant);
+      max-width: 68ch;
+      margin: var(--space-sm) 0 0 0;
+    }
+    .ornament-rule {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      margin-block: var(--space-sm);
+      color: var(--secondary);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+    .ornament-rule::before,
+    .ornament-rule::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--brass-gradient);
+    }
+
+    /* Hero Banner (Beranda) */
+    .hero-banner {
+      position: relative;
+      background: var(--emerald-gradient);
+      color: var(--on-primary-deep);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-xl);
+      overflow: hidden;
+      border-top: 3px solid var(--gold-bright);
+      border-bottom: 3px solid var(--gold-bright);
+      box-shadow: var(--soft-shadow-raised);
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.85fr);
+      gap: var(--space-xl);
+      align-items: center;
+    }
+    .hero-pattern {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.12;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 1;
+    }
+    .hero-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: var(--space-xs) var(--space-md);
+      border-radius: var(--rounded-full);
+      background: rgb(212 166 68 / 0.16);
+      border: 1px solid var(--gold-bright);
+      color: var(--gold-soft);
+      font-size: var(--label-size);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: var(--space-md);
+    }
+    .hero-title {
+      font-family: var(--font-headline);
+      font-weight: 600;
+      font-size: var(--display-size);
+      line-height: 1.06;
+      letter-spacing: -0.01em;
+      color: var(--on-primary);
+      margin: 0 0 var(--space-md) 0;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--gold-soft);
+    }
+    .hero-lede {
+      font-size: 1.03rem;
+      line-height: 1.65;
+      color: var(--on-primary-deep);
+      max-width: 60ch;
+      margin: 0 0 var(--space-lg) 0;
+    }
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-md);
+      align-items: center;
+    }
+
+    /* Hero Side Highlight */
+    .hero-spotlight {
+      position: relative;
+      z-index: 1;
+      background: rgb(9 43 31 / 0.62);
+      border: 1px solid var(--gold-bright);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      display: grid;
+      gap: var(--space-md);
+    }
+    .hero-spotlight-label {
+      font-size: var(--label-size);
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold-soft);
+      margin: 0;
+    }
+    .hero-spotlight-figure {
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: 2.15rem;
+      line-height: 1.1;
+      color: var(--on-primary);
+      font-variant-numeric: tabular-nums lining-nums;
+      margin: 0;
+    }
+    .hero-spotlight-meta {
+      font-size: 0.875rem;
+      color: var(--on-primary-deep);
+      margin: 0;
+    }
+    .progress-track {
+      width: 100%;
+      height: 10px;
+      border-radius: var(--rounded-full);
+      background: rgb(255 255 255 / 0.18);
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: var(--rounded-full);
+      background: var(--gold-bright);
+      transition: width var(--dur-long) var(--ease-out);
+    }
+    .progress-track-light {
+      width: 100%;
+      height: 10px;
+      border-radius: var(--rounded-full);
+      background: var(--surface-container-high);
+      overflow: hidden;
+    }
+    .progress-fill-emerald {
+      height: 100%;
+      border-radius: var(--rounded-full);
+      background: var(--primary);
+    }
+    .progress-fill-gold {
+      height: 100%;
+      border-radius: var(--rounded-full);
+      background: var(--gold-bright);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      min-height: 44px;
+      padding: 0 var(--space-lg);
+      border-radius: var(--rounded-full);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: background-color var(--dur-short) var(--ease-out),
+                  color var(--dur-short) var(--ease-out),
+                  transform var(--dur-micro) var(--ease-out),
+                  box-shadow var(--dur-short) var(--ease-out);
+      text-decoration: none;
+    }
+    .btn:active { transform: translateY(1px); }
+    .btn-primary {
+      background: var(--primary);
+      color: var(--on-primary);
+    }
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      box-shadow: var(--soft-shadow);
+    }
+    .btn-gold {
+      background: var(--gold-bright);
+      color: var(--on-surface);
+      font-weight: 700;
+    }
+    .btn-gold:hover {
+      background: var(--gold-soft);
+      box-shadow: var(--soft-shadow);
+    }
+    .btn-outline-light {
+      background: transparent;
+      border-color: var(--gold-soft);
+      color: var(--on-primary);
+    }
+    .btn-outline-light:hover {
+      background: rgb(255 255 255 / 0.12);
+    }
+    .btn-secondary {
+      background: var(--surface-paper);
+      border-color: var(--outline);
+      color: var(--on-surface);
+    }
+    .btn-secondary:hover {
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+    }
+    .btn-sm {
+      min-height: 38px;
+      padding: 0 var(--space-md);
+      font-size: 0.8125rem;
+    }
+
+    /* Arch Cards (Terracotta Signature) */
+    .arch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+      gap: var(--space-lg);
+    }
+    .arch-card {
+      background: var(--surface-container-low);
+      border: var(--warm-hairline);
+      border-radius: var(--rounded-arch);
+      padding: var(--space-lg) var(--space-md) var(--space-md);
+      text-align: center;
+      box-shadow: var(--soft-shadow);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: var(--space-xs);
+      transition: transform var(--dur-short) var(--ease-out),
+                  box-shadow var(--dur-short) var(--ease-out);
+    }
+    .arch-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--soft-shadow-raised);
+    }
+    .arch-card.is-featured {
+      background: var(--primary-container);
+      border-color: var(--primary);
+    }
+    .arch-label {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--on-surface-variant);
+    }
+    .arch-value {
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: clamp(1.65rem, 1.3rem + 1vw, 2.2rem);
+      line-height: 1.1;
+      color: var(--on-surface);
+      font-variant-numeric: tabular-nums lining-nums;
+      margin: var(--space-xs) 0;
+    }
+    .arch-card.is-featured .arch-value {
+      color: var(--on-primary-container);
+    }
+    .arch-caption {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--secondary);
+    }
+
+    /* Standard Content Panels & Asymmetric Grid */
+    .split-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.95fr);
+      gap: var(--space-lg);
+      align-items: start;
+    }
+    .equal-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+      gap: var(--space-lg);
+    }
+    .panel {
+      background: var(--surface-paper);
+      border: var(--warm-hairline);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      box-shadow: var(--soft-shadow);
+    }
+    .panel-tinted {
+      background: var(--surface-container-low);
+      border: var(--warm-hairline);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+    }
+    .panel-emerald-tint {
+      background: var(--primary-container);
+      border: 1px solid var(--primary);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+    }
+    .panel-heading {
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: 1.45rem;
+      line-height: 1.2;
+      color: var(--on-surface);
+      margin: 0 0 var(--space-sm) 0;
+    }
+
+    /* Badges & Status Pills */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: var(--rounded-full);
+      font-size: var(--label-size);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .badge-emerald {
+      background: var(--positive-bg);
+      color: var(--positive);
+      border: 1px solid var(--primary);
+    }
+    .badge-gold {
+      background: var(--warning-bg);
+      color: var(--warning);
+      border: 1px solid var(--outline);
+    }
+    .badge-neutral {
+      background: var(--neutral-bg);
+      color: var(--neutral-ink);
+      border: 1px solid var(--outline-variant);
+    }
+
+    /* Monospace Accounts & Copy Box */
+    .account-box {
+      background: var(--surface-container-low);
+      border: 1px dashed var(--outline);
+      border-radius: var(--rounded);
+      padding: var(--space-md);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+      flex-wrap: wrap;
+      margin-block: var(--space-md);
+    }
+    .mono-code {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      font-size: 1.25rem;
+      letter-spacing: 0.04em;
+      color: var(--primary-deep);
+      word-break: break-all;
+    }
+    .copy-feedback {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--positive);
+      min-height: 1.2em;
+      margin-top: var(--space-xs);
+    }
+
+    /* QRIS Card */
+    .qris-card-frame {
+      background: var(--surface-container-low);
+      border: 1px solid var(--outline);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md);
+      display: flex;
+      gap: var(--space-lg);
+      align-items: center;
+      flex-wrap: wrap;
+      margin-block: var(--space-md);
+    }
+    .qris-svg-box {
+      width: 152px;
+      height: 152px;
+      background: var(--surface-paper);
+      border: 2px solid var(--primary);
+      border-radius: var(--rounded);
+      padding: 8px;
+      flex-shrink: 0;
+    }
+
+    /* Tables */
+    .table-scroll {
+      width: 100%;
+      overflow-x: auto;
+      border-radius: var(--rounded);
+      border: var(--warm-hairline);
+      background: var(--surface-paper);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    thead th {
+      background: var(--surface-container);
+      color: var(--on-surface);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-align: left;
+      padding: var(--space-md);
+      border-bottom: 2px solid var(--outline);
+      white-space: nowrap;
+    }
+    tbody td {
+      padding: var(--space-md);
+      border-bottom: var(--warm-hairline);
+      vertical-align: middle;
+    }
+    tbody tr:hover {
+      background: var(--surface-container-low);
+    }
+    tfoot td {
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+      font-weight: 700;
+      padding: var(--space-md);
+      border-top: 2px solid var(--primary);
+    }
+    .num {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      white-space: nowrap;
+    }
+
+    /* Filter Pill Bar */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      align-items: center;
+    }
+    .filter-pill {
+      min-height: 40px;
+      padding: 0 var(--space-md);
+      border-radius: var(--rounded-full);
+      border: 1px solid var(--outline-variant);
+      background: var(--surface-paper);
+      color: var(--on-surface-variant);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color var(--dur-short) var(--ease-out),
+                  color var(--dur-short) var(--ease-out);
+    }
+    .filter-pill:hover {
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+    }
+    .filter-pill.is-selected {
+      background: var(--primary);
+      color: var(--on-primary);
+      border-color: var(--primary);
+    }
+
+    /* Chart Container */
+    .chart-box {
+      position: relative;
+      min-height: 300px;
+      height: 300px;
+      width: 100%;
+    }
+
+    /* Calculator / Stepper Controls */
+    .calc-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) auto;
+      gap: var(--space-md);
+      align-items: center;
+      padding-block: var(--space-sm);
+      border-bottom: var(--warm-hairline);
+    }
+    .stepper {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+    }
+    .stepper-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--rounded);
+      border: 1px solid var(--outline);
+      background: var(--surface-paper);
+      color: var(--on-surface);
+      font-weight: 700;
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
+    .stepper-btn:hover {
+      background: var(--primary-container);
+      color: var(--primary);
+    }
+    .stepper-input {
+      width: 64px;
+      height: 38px;
+      text-align: center;
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--rounded);
+      background: var(--surface-paper);
+      color: var(--on-surface);
+      font-family: var(--font-mono);
+      font-weight: 600;
+    }
+    .field-label {
+      display: block;
+      font-size: var(--label-size);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--on-surface-variant);
+      margin-bottom: var(--space-xs);
+    }
+    .text-input, .select-input, .textarea-input {
+      width: 100%;
+      padding: var(--space-sm) var(--space-md);
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--rounded);
+      background: var(--surface-paper);
+      color: var(--on-surface);
+      font-size: 0.9375rem;
+    }
+    .textarea-input {
+      resize: vertical;
+      min-height: 92px;
+    }
+
+    /* Interactive Architectural Elevation (Progres) */
+    .elevation-card {
+      background: var(--surface-paper);
+      border: var(--warm-hairline);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: var(--space-lg);
+      align-items: center;
+    }
+    .elevation-layer {
+      cursor: pointer;
+      transition: opacity var(--dur-short) var(--ease-out);
+    }
+    .elevation-layer:hover {
+      opacity: 0.85;
+    }
+
+    /* Schematic GPS Map (Sekretariat & Lokasi) */
+    .schematic-map-wrap {
+      background: var(--surface-container-low);
+      border: 1px solid var(--outline);
+      border-radius: var(--rounded-lg);
+      overflow: hidden;
+    }
+    .schematic-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: var(--space-sm) var(--space-md);
+      background: var(--surface-container);
+      border-bottom: var(--warm-hairline);
+    }
+    .schematic-canvas {
+      min-height: 290px;
+      padding: var(--space-md);
+      background-color: var(--background);
+      background-image:
+        linear-gradient(var(--outline-variant) 1px, transparent 1px),
+        linear-gradient(90deg, var(--outline-variant) 1px, transparent 1px);
+      background-size: 36px 36px;
+    }
+    .map-hotspot {
+      cursor: pointer;
+    }
+
+    /* Timeline (Latar Belakang) */
+    .timeline-list {
+      display: grid;
+      gap: var(--space-md);
+      border-left: 2px solid var(--outline);
+      padding-left: var(--space-lg);
+      margin-left: var(--space-sm);
+    }
+    .timeline-item {
+      position: relative;
+      background: var(--surface-paper);
+      border: var(--warm-hairline);
+      border-radius: var(--rounded);
+      padding: var(--space-md);
+    }
+    .timeline-dot {
+      position: absolute;
+      left: calc(-1 * var(--space-lg) - 9px);
+      top: 18px;
+      width: 16px;
+      height: 16px;
+      border-radius: var(--rounded-full);
+      background: var(--primary);
+      border: 3px solid var(--background);
+    }
+    .timeline-dot.is-gold {
+      background: var(--gold-bright);
+    }
+
+    /* Footer */
+    .site-footer {
+      background: var(--primary-deep);
+      color: var(--on-primary-deep);
+      border-top: 3px solid var(--gold-bright);
+      margin-top: var(--space-xl);
+      padding: var(--space-xl) var(--space-lg);
+    }
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+      gap: var(--space-xl);
+      align-items: start;
+    }
+    .footer-title {
+      font-family: var(--font-headline);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--gold-soft);
+      margin: 0 0 var(--space-xs) 0;
+    }
+    .footer-note {
+      font-size: 0.8125rem;
+      color: var(--gold-soft);
+      opacity: 0.88;
+      margin-top: var(--space-md);
+    }
+
+    /* Floating Tools / Widget Mengambang */
+    .floating-widget {
+      position: fixed;
+      right: var(--space-lg);
+      bottom: var(--space-lg);
+      z-index: 60;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: var(--space-sm);
+    }
+    .floating-actions {
+      display: flex;
+      gap: var(--space-sm);
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .fab-btn {
+      min-height: 46px;
+      padding: 0 var(--space-md);
+      border-radius: var(--rounded-full);
+      border: 1.5px solid var(--gold-bright);
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-sm);
+      font-size: 0.875rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: var(--floating-shadow);
+      transition: transform var(--dur-short) var(--ease-out),
+                  background-color var(--dur-short) var(--ease-out);
+    }
+    .fab-btn:hover { transform: translateY(-2px); }
+    .fab-donate {
+      background: var(--gold-bright);
+      color: var(--on-surface);
+    }
+    .fab-wa {
+      background: var(--primary);
+      color: var(--on-primary);
+    }
+    .wa-drawer {
+      width: min(360px, calc(100vw - 2rem));
+      background: var(--surface-paper);
+      border: 2px solid var(--primary);
+      border-radius: var(--rounded-lg);
+      box-shadow: var(--floating-shadow);
+      padding: var(--space-md);
+      display: none;
+    }
+    .wa-drawer.is-open {
+      display: grid;
+      gap: var(--space-sm);
+    }
+    .wa-drawer-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: var(--warm-hairline);
+      padding-bottom: var(--space-sm);
+    }
+    .icon-close-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--rounded-full);
+      border: 1px solid var(--outline-variant);
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Inline Toast */
+    .toast-banner {
+      position: fixed;
+      left: 50%;
+      bottom: calc(var(--space-2xl) + var(--space-lg));
+      transform: translateX(-50%) translateY(16px);
+      background: var(--primary-deep);
+      color: var(--gold-soft);
+      border: 1px solid var(--gold-bright);
+      padding: var(--space-sm) var(--space-lg);
+      border-radius: var(--rounded-full);
+      font-size: 0.875rem;
+      font-weight: 600;
+      box-shadow: var(--floating-shadow);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 70;
+      transition: opacity var(--dur-short) var(--ease-out),
+                  transform var(--dur-short) var(--ease-out);
+    }
+    .toast-banner.is-visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Responsive Breakpoints */
+    @media (max-width: 860px) {
+      .hero-banner,
+      .split-grid,
+      .elevation-card,
+      .footer-inner {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 640px) {
+      .page-grid { padding: var(--space-md); }
+      .header-inner { padding: var(--space-sm) var(--space-md); }
+      .hero-banner { padding: var(--space-lg) var(--space-md); }
+      .floating-widget {
+        right: var(--space-sm);
+        bottom: var(--space-sm);
+      }
+      .fab-btn {
+        min-height: 44px;
+        padding: 0 var(--space-md);
+        font-size: 0.8125rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header & Navigasi Tab Utama -->
+  <header class="site-header">
+    <div class="header-inner">
+      <button type="button" class="brand" onclick="switchTab('beranda')">
+        <span class="brand-emblem" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 2v2M12 4c-3.5 2-5 4.8-5 7.5V20h10v-8.5C17 8.8 15.5 6 12 4z"/>
+            <path d="M4 20h16M9 20v-4a3 3 0 0 1 6 0v4"/>
+          </svg>
+        </span>
+        <span>
+          <span class="brand-title">Masjid Al-Barokah</span>
+          <span class="brand-subtitle">Kedungkacip • Tanjungkerta • Indramayu</span>
+        </span>
+      </button>
+
+      <nav class="main-nav" role="tablist" aria-label="Navigasi Utama Pembangunan Masjid Al-Barokah">
+        <button type="button" class="nav-tab" role="tab" id="tab-btn-beranda" aria-selected="true" aria-controls="view-beranda" onclick="switchTab('beranda')">Beranda</button>
+        <button type="button" class="nav-tab" role="tab" id="tab-btn-latar-belakang" aria-selected="false" aria-controls="view-latar-belakang" onclick="switchTab('latar-belakang')">Latar Belakang</button>
+        <button type="button" class="nav-tab" role="tab" id="tab-btn-donasi" aria-selected="false" aria-controls="view-donasi" onclick="switchTab('donasi')">Donasi</button>
+        <button type="button" class="nav-tab" role="tab" id="tab-btn-anggaran" aria-selected="false" aria-controls="view-anggaran" onclick="switchTab('anggaran')">Transparansi Anggaran</button>
+        <button type="button" class="nav-tab" role="tab" id="tab-btn-progres" aria-selected="false" aria-controls="view-progres" onclick="switchTab('progres')">Progres Pembangunan</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page-grid" id="main-content">
+
+    <!-- ===================================================== -->
+    <!-- 1. BERANDA (Default View)                             -->
+    <!-- ===================================================== -->
+    <section id="view-beranda" class="view-section is-active" role="tabpanel" aria-labelledby="tab-btn-beranda">
+
+      <!-- Hero Banner -->
+      <div class="hero-banner">
+        <div class="hero-pattern" aria-hidden="true">
+          <svg width="360" height="360" viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true">
+            <rect x="40" y="40" width="120" height="120"/>
+            <rect x="40" y="40" width="120" height="120" transform="rotate(45 100 100)"/>
+            <circle cx="100" cy="100" r="46"/>
+            <circle cx="100" cy="100" r="82"/>
+          </svg>
+        </div>
+
+        <div class="hero-content">
+          <p class="hero-kicker">Wakaf &amp; Infak Pembangunan Total • Berdiri Sejak 1990</p>
+          <h1 class="hero-title">Membangun Kembali Rumah Allah, <em>Masjid Al-Barokah</em></h1>
+          <p class="hero-lede">
+            Mari bersama mewujudkan pembangunan total Masjid Al-Barokah di Blok Kedungkacip, Desa Tanjungkerta, Kec. Kroya, Kab. Indramayu. Bangunan lama sejak tahun 1990 kini rapuh dan bocor—setiap kontribusi Anda menjadi amal jariyah bagi kemakmuran ibadah jamaah.
+          </p>
+          <div class="hero-actions">
+            <button type="button" class="btn btn-gold" onclick="switchTab('donasi')">Salurkan Donasi Sekarang</button>
+            <button type="button" class="btn btn-outline-light" onclick="switchTab('anggaran')">Lihat Transparansi RAB</button>
+          </div>
+        </div>
+
+        <aside class="hero-spotlight" aria-label="Prioritas Tahap Aktif">
+          <p class="hero-spotlight-label">Tahap Berjalan Saat Ini • Tahap 7 dari 12</p>
+          <h2 class="hero-spotlight-figure">Pengecoran Dak Atap</h2>
+          <p class="hero-spotlight-meta">
+            Struktur bawah (pondasi, tempat wudu, pilar, bata merah, dan sloof atas) telah rampung. Fokus pengumpulan dana material dak (Bondek, Besi 10mm, Pasir cor) masih membutuhkan:
+          </p>
+          <div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 6px; font-weight: 600;">
+              <span>Progres Tahap Fisik</span>
+              <span>6 / 12 Tahap Selesai (50%)</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" style="width: 50%;"></div>
+            </div>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: baseline; border-top: 1px solid rgb(212 166 68 / 0.35); padding-top: var(--space-sm);">
+            <span style="font-size: 0.8125rem;">Kekurangan Dana Dak Atap:</span>
+            <strong style="font-family: var(--font-mono); font-size: 1.125rem; color: var(--gold-soft);">Rp 41.100.000</strong>
+          </div>
+        </aside>
+      </div>
+
+      <!-- Statistik Utama (Riad Arch Cards) -->
+      <div>
+        <div class="ornament-rule">◆ Statistik Utama Pembangunan &amp; RAB ◆</div>
+        <div class="arch-grid">
+          <article class="arch-card is-featured">
+            <span class="arch-label">RAB Total Pembangunan</span>
+            <span class="arch-value">Rp 665.684.000</span>
+            <span class="arch-caption">Material, Upah &amp; Operasional 5%</span>
+          </article>
+          <article class="arch-card">
+            <span class="arch-label">Progres Tahap Pekerjaan</span>
+            <span class="arch-value">6 / 12 Tahap</span>
+            <span class="arch-caption">6 Selesai • 1 Berjalan • 5 Belum</span>
+          </article>
+          <article class="arch-card">
+            <span class="arch-label">Kekurangan Dana Dak Atap</span>
+            <span class="arch-value">Rp 41.100.000</span>
+            <span class="arch-caption">Dari total kebutuhan Rp 44.100.000</span>
+          </article>
+          <article class="arch-card">
+            <span class="arch-label">Jejak Pengabdian Masjid</span>
+            <span class="arch-value">Sejak 1990</span>
+            <span class="arch-caption">Renovasi total demi kenyamanan</span>
+          </article>
+        </div>
+      </div>
+
+      <!-- Ringkasan Singkat Ajakan Donasi & Akses Cepat -->
+      <div class="split-grid">
+        <article class="panel">
+          <p class="kicker">Ringkasan Ajakan Donasi</p>
+          <h2 class="panel-heading">Tahap Krusial: Pengadaan Material Pengecoran Dak Atap</h2>
+          <p>
+            Alhamdulillah, enam tahap awal pembangunan fisik Masjid Al-Barokah telah selesai—mulai dari pondasi, area tempat wudu, urug pondasi, pilar dan dinding bata merah badan utama, area serambi, hingga pengecoran sloof atas dan sloof gantung.
+          </p>
+          <p>
+            Saat ini pekerjaan memasuki <strong>Tahap 7 (Dak Atap)</strong>. Dari empat material utama yang dibutuhkan (total Rp 44.100.000), kebutuhan <strong>Batu split 10 m³ (Rp 3.000.000)</strong> sudah tersedia, sedangkan <strong>Bondek (30 lembar)</strong>, <strong>Besi 10mm (150 batang)</strong>, dan <strong>Pasir cor (2 truk)</strong> masih sangat dibutuhkan agar pengecoran dapat segera dilaksanakan.
+          </p>
+          <div class="hero-actions">
+            <button type="button" class="btn btn-primary btn-sm" onclick="switchTab('progres')">Pantau 12 Tahap Progres</button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="switchTab('latar-belakang')">Baca Sejarah Masjid</button>
+          </div>
+        </article>
+
+        <article class="panel-emerald-tint">
+          <p class="kicker">Saluran Donasi Cepat &amp; Terverifikasi</p>
+          <h2 class="panel-heading">Rekening Resmi &amp; QRIS Pembangunan</h2>
+          <p style="margin-bottom: var(--space-sm);">
+            Salurkan infak, sedekah, atau wakaf material melalui rekening resmi Bendahara Pembangunan Masjid Al-Barokah:
+          </p>
+          <div class="account-box" style="background: var(--surface-paper);">
+            <div>
+              <div style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--secondary);">Bank Mandiri • a.n. DULKARIM</div>
+              <div class="mono-code">1340031912743</div>
+            </div>
+            <button type="button" class="btn btn-primary btn-sm" onclick="copyText('1340031912743', 'beranda-copy-msg', 'Nomor Rekening Bank Mandiri')">Salin Rekening</button>
+          </div>
+          <div id="beranda-copy-msg" class="copy-feedback" aria-live="polite"></div>
+          <p style="font-size: 0.875rem; color: var(--on-surface-variant); margin-top: var(--space-sm);">
+            Tersedia pula kanal <strong>QRIS Digital (NMID: ID1025453093722)</strong> a.n. MASJID AL BAROKAH serta penerimaan donasi material di Sekretariat Panitia.
+          </p>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="switchTab('donasi')">Buka Halaman Donasi Lengkap</button>
+        </article>
+      </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- 2. LATAR BELAKANG                                     -->
+    <!-- ===================================================== -->
+    <section id="view-latar-belakang" class="view-section" role="tabpanel" aria-labelledby="tab-btn-latar-belakang" hidden>
+      <div>
+        <p class="kicker">Sejarah &amp; Kondisi Eksisting</p>
+        <h1 class="section-title">Menjaga Warisan Ibadah Sejak <em>Tahun 1990</em></h1>
+        <p class="section-lede">
+          Masjid Al-Barokah berdiri di Blok Kedungkacip, RT 13 RW 04, Desa Tanjungkerta, Kecamatan Kroya, Kabupaten Indramayu sebagai pusat kegiatan ibadah dan pembinaan umat masyarakat setempat sejak lebih dari tiga dekade lalu.
+        </p>
+      </div>
+
+      <div class="equal-grid">
+        <article class="panel-tinted">
+          <span class="badge badge-gold" style="margin-bottom: var(--space-sm);">Kondisi Bangunan Lama (1990)</span>
+          <h2 class="panel-heading">Struktur Lapuk, Atap Bocor &amp; Keterbatasan Ruang</h2>
+          <p>
+            Setelah melayani jamaah secara terus-menerus sejak tahun <strong>1990</strong>, kondisi fisik bangunan lama Masjid Al-Barokah mengalami penurunan kualitas struktural yang serius. Bagian atap mengalami kebocoran saat hujan, material bangunan kian rapuh termakan usia, serta kapasitas ruang ibadah tidak lagi memadai untuk menampung pertumbuhan jamaah.
+          </p>
+          <p style="margin-bottom: 0; color: var(--on-surface-variant); font-size: 0.9rem;">
+            Pembongkaran bangunan masjid lama dijadwalkan pada <strong>Tahap 12</strong>, tepat setelah bangunan masjid baru selesai dibangun dan siap digunakan agar aktivitas salat berjamaah warga tidak terputus.
+          </p>
+        </article>
+
+        <article class="panel-emerald-tint">
+          <span class="badge badge-emerald" style="margin-bottom: var(--space-sm);">Tujuan Renovasi Total</span>
+          <h2 class="panel-heading">Bangunan Baru yang Kokoh, Layak &amp; Nyaman</h2>
+          <p>
+            Panitia Pembangunan Masjid Al-Barokah merencanakan renovasi total dengan konstruksi bertulang yang kokoh (pondasi utama, pilar beton dan bata merah, sloof gantung, pengecoran dak atap, serta pemasangan kubah) dilengkapi area serambi yang luas dan tempat wudu yang bersih.
+          </p>
+          <p style="margin-bottom: 0; font-size: 0.9rem;">
+            Dengan total Rencana Anggaran Biaya sebesar <strong>Rp 665.684.000</strong>, masjid baru diharapkan menjadi rumah ibadah yang aman, sejuk, dan berdaya guna jangka panjang bagi generasi mendatang.
+          </p>
+        </article>
+      </div>
+
+      <div class="split-grid">
+        <div class="panel">
+          <p class="kicker">Linimasa Perjalanan Pembangunan</p>
+          <h2 class="panel-heading">Dari Pendirian 1990 Menuju Wajah Baru Masjid</h2>
+          <div class="timeline-list">
+            <div class="timeline-item">
+              <span class="timeline-dot" aria-hidden="true"></span>
+              <strong>1990 — Pendirian Masjid Awal</strong>
+              <p style="margin: var(--space-xs) 0 0 0; font-size: 0.9rem; color: var(--on-surface-variant);">
+                Masjid Al-Barokah mulai berdiri melayani warga Blok Kedungkacip, Desa Tanjungkerta, Kec. Kroya, Kab. Indramayu.
+              </p>
+            </div>
+            <div class="timeline-item">
+              <span class="timeline-dot is-gold" aria-hidden="true"></span>
+              <strong>Evaluasi Kondisi — Bangunan Rapuh &amp; Bocor</strong>
+              <p style="margin: var(--space-xs) 0 0 0; font-size: 0.9rem; color: var(--on-surface-variant);">
+                Setelah lebih dari 30 tahun digunakan, atap bocor dan struktur lama dinilai membutuhkan pembangunan ulang total demi keselamatan jamaah.
+              </p>
+            </div>
+            <div class="timeline-item">
+              <span class="timeline-dot" aria-hidden="true"></span>
+              <strong>Tahap 1–6 Selesai — Struktur Utama Berdiri</strong>
+              <p style="margin: var(--space-xs) 0 0 0; font-size: 0.9rem; color: var(--on-surface-variant);">
+                Pondasi, tempat wudu, urug tanah, pilar &amp; dinding bata merah, area serambi, serta sloof atas/gantung telah rampung dikerjakan.
+              </p>
+            </div>
+            <div class="timeline-item">
+              <span class="timeline-dot is-gold" aria-hidden="true"></span>
+              <strong>Saat Ini (Tahap 7) — Pengumpulan Material Dak Atap</strong>
+              <p style="margin: var(--space-xs) 0 0 0; font-size: 0.9rem; color: var(--on-surface-variant);">
+                Panitia fokus menghimpun dukungan donasi untuk pengecoran dak atap sebelum melanjutkan pemasangan kubah dan tahap finishing.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <aside class="panel-tinted">
+          <p class="kicker">Identitas Lokasi Resmi</p>
+          <h2 class="panel-heading">Alamat Masjid Al-Barokah</h2>
+          <p style="font-weight: 600; color: var(--on-surface);">
+            Jln. Babakan Dampyang Gantar, Blok Kedungkacip, RT 13 RW 04, Desa Tanjungkerta, Kec. Kroya, Kab. Indramayu, Jawa Barat 45265
+          </p>
+          <p style="font-size: 0.9rem; color: var(--on-surface-variant);">
+            Warga dan donatur dari luar daerah dapat meninjau langsung progres pembangunan atau bersilaturahmi ke Sekretariat Panitia di lokasi masjid.
+          </p>
+          <div class="hero-actions" style="margin-top: var(--space-md);">
+            <button type="button" class="btn btn-primary btn-sm" onclick="switchTab('donasi', 'sekretariat-lokasi')">Lihat Peta GPS &amp; Sekretariat</button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="openWaDrawer('survey')">Hubungi Panitia (WA)</button>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- 3. DONASI                                             -->
+    <!-- ===================================================== -->
+    <section id="view-donasi" class="view-section" role="tabpanel" aria-labelledby="tab-btn-donasi" hidden>
+      <div>
+        <p class="kicker">Saluran Resmi Wakaf &amp; Infak</p>
+        <h1 class="section-title">Salurkan Donasi Terbaik untuk <em>Masjid Al-Barokah</em></h1>
+        <p class="section-lede">
+          Seluruh donasi dikelola secara amanah dan transparan oleh Panitia Pembangunan Masjid Al-Barokah. Pilih metode transfer bank, QRIS digital, atau pengantaran material/tunai langsung di sekretariat.
+        </p>
+      </div>
+
+      <!-- Rekening Mandiri & QRIS Digital -->
+      <div class="equal-grid">
+        <article class="panel" id="kartu-rekening-mandiri">
+          <span class="badge badge-emerald" style="margin-bottom: var(--space-sm);">Transfer Bank Resmi</span>
+          <h2 class="panel-heading">Bank Mandiri — Bendahara Pembangunan</h2>
+          <p style="color: var(--on-surface-variant); font-size: 0.9375rem;">
+            Pastikan nama pemilik rekening tujuan tertera atas nama <strong>DULKARIM</strong> selaku Bendahara Pembangunan Masjid Al-Barokah.
+          </p>
+
+          <div class="account-box">
+            <div>
+              <div style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--secondary);">Nomor Rekening Bank Mandiri</div>
+              <div class="mono-code" id="mandiri-rek">1340031912743</div>
+              <div style="font-size: 0.875rem; font-weight: 600; color: var(--on-surface); margin-top: 2px;">a.n. DULKARIM (Bendahara Pembangunan)</div>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="copyText('1340031912743', 'donasi-rek-feedback', 'Nomor Rekening Bank Mandiri')">Salin Nomor Rekening</button>
+          </div>
+          <div id="donasi-rek-feedback" class="copy-feedback" aria-live="polite"></div>
+
+          <div style="margin-top: var(--space-md); padding-top: var(--space-md); border-top: var(--warm-hairline); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-sm);">
+            <span style="font-size: 0.85rem; color: var(--on-surface-variant);">Sudah melakukan transfer? Konfirmasi kepada panitia:</span>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="openWaDrawer('transfer')">Konfirmasi via WhatsApp</button>
+          </div>
+        </article>
+
+        <article class="panel" id="kartu-qris-digital">
+          <span class="badge badge-gold" style="margin-bottom: var(--space-sm);">Pembayaran Instan</span>
+          <h2 class="panel-heading">QRIS Digital — Semua Bank &amp; E-Wallet</h2>
+          <p style="color: var(--on-surface-variant); font-size: 0.9375rem;">
+            Dapat dipindai melalui aplikasi perbankan maupun dompet digital apa pun. Verifikasi nama merchant dan NMID sebelum menyelesaikan pembayaran.
+          </p>
+
+          <div class="qris-card-frame">
+            <div class="qris-svg-box" aria-label="Kartu QRIS Digital Masjid Al-Barokah NMID ID1025453093722">
+              <svg viewBox="0 0 120 120" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Visualisasi Kode QRIS Resmi Masjid Al-Barokah">
+                <rect width="120" height="120" fill="#fffdf8"/>
+                <!-- Finder Patterns -->
+                <rect x="8" y="8" width="28" height="28" fill="none" stroke="#0f5c43" stroke-width="5"/>
+                <rect x="16" y="16" width="12" height="12" fill="#0f5c43"/>
+                <rect x="84" y="8" width="28" height="28" fill="none" stroke="#0f5c43" stroke-width="5"/>
+                <rect x="92" y="16" width="12" height="12" fill="#0f5c43"/>
+                <rect x="8" y="84" width="28" height="28" fill="none" stroke="#0f5c43" stroke-width="5"/>
+                <rect x="16" y="92" width="12" height="12" fill="#0f5c43"/>
+                <!-- Deterministic QR Data Modules -->
+                <rect x="44" y="10" width="6" height="6" fill="#15241d"/>
+                <rect x="56" y="10" width="6" height="6" fill="#15241d"/>
+                <rect x="68" y="10" width="6" height="6" fill="#15241d"/>
+                <rect x="44" y="22" width="12" height="6" fill="#15241d"/>
+                <rect x="62" y="22" width="6" height="12" fill="#15241d"/>
+                <rect x="10" y="44" width="6" height="6" fill="#15241d"/>
+                <rect x="22" y="44" width="12" height="6" fill="#15241d"/>
+                <rect x="10" y="56" width="12" height="6" fill="#15241d"/>
+                <rect x="28" y="56" width="6" height="12" fill="#15241d"/>
+                <rect x="10" y="68" width="6" height="6" fill="#15241d"/>
+                <!-- Center Emblem -->
+                <rect x="44" y="44" width="32" height="32" rx="4" fill="#e0f0ea" stroke="#c5912c" stroke-width="2"/>
+                <text x="60" y="64" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="700" fill="#0f5c43">QRIS</text>
+                <rect x="84" y="44" width="6" height="12" fill="#15241d"/>
+                <rect x="96" y="44" width="12" height="6" fill="#15241d"/>
+                <rect x="90" y="58" width="12" height="6" fill="#15241d"/>
+                <rect x="44" y="84" width="12" height="6" fill="#15241d"/>
+                <rect x="62" y="84" width="6" height="12" fill="#15241d"/>
+                <rect x="74" y="84" width="12" height="6" fill="#15241d"/>
+                <rect x="92" y="84" width="14" height="6" fill="#15241d"/>
+                <rect x="44" y="96" width="6" height="12" fill="#15241d"/>
+                <rect x="56" y="102" width="18" height="6" fill="#15241d"/>
+                <rect x="80" y="96" width="12" height="12" fill="#0f5c43"/>
+                <rect x="98" y="96" width="10" height="12" fill="#15241d"/>
+              </svg>
+            </div>
+            <div style="flex: 1; min-width: 200px;">
+              <div style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--secondary);">Merchant QRIS Terdaftar</div>
+              <div style="font-family: var(--font-headline); font-size: 1.4rem; font-weight: 700; color: var(--on-surface);">MASJID AL BAROKAH</div>
+              <div style="margin-top: var(--space-xs); font-size: 0.8125rem; color: var(--on-surface-variant);">NMID Resmi:</div>
+              <div class="mono-code" style="font-size: 1.05rem;">ID1025453093722</div>
+              <div style="margin-top: var(--space-sm);">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="copyText('ID1025453093722', 'donasi-nmid-feedback', 'NMID QRIS Masjid Al-Barokah')">Salin NMID</button>
+              </div>
+              <div id="donasi-nmid-feedback" class="copy-feedback" aria-live="polite"></div>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- Simulasi Patungan Material Dak Atap -->
+      <article class="panel-tinted" id="kalkulator-material">
+        <div class="split-grid" style="align-items: center;">
+          <div>
+            <p class="kicker">Simulasi Wakaf Material Dak Atap</p>
+            <h2 class="panel-heading">Hitung Kontribusi Material Pembangunan Anda</h2>
+            <p style="font-size: 0.9rem; color: var(--on-surface-variant); margin-top: 0;">
+              Pilih jumlah satuan material Dak Atap yang masih dibutuhkan sesuai RAB resmi, lalu buat draf pesan konfirmasi untuk dikirim ke WhatsApp Panitia.
+            </p>
+
+            <div class="calc-row">
+              <div>
+                <strong>Bondek</strong> <span style="color: var(--on-surface-variant); font-size: 0.85rem;">(Butuh 30 lembar)</span>
+                <div style="font-size: 0.8125rem; color: var(--secondary); font-family: var(--font-mono);">Rp 700.000 / lembar</div>
+              </div>
+              <div class="stepper">
+                <button type="button" class="stepper-btn" aria-label="Kurangi Bondek" onclick="stepMaterial('bondek', -1)">−</button>
+                <input type="number" id="qty-bondek" class="stepper-input" value="1" min="0" max="30" aria-label="Jumlah lembar Bondek" oninput="updateMaterialCalc()">
+                <button type="button" class="stepper-btn" aria-label="Tambah Bondek" onclick="stepMaterial('bondek', 1)">+</button>
+              </div>
+            </div>
+
+            <div class="calc-row">
+              <div>
+                <strong>Besi 10mm</strong> <span style="color: var(--on-surface-variant); font-size: 0.85rem;">(Butuh 150 batang)</span>
+                <div style="font-size: 0.8125rem; color: var(--secondary); font-family: var(--font-mono);">Rp 90.000 / batang</div>
+              </div>
+              <div class="stepper">
+                <button type="button" class="stepper-btn" aria-label="Kurangi Besi 10mm" onclick="stepMaterial('besi', -1)">−</button>
+                <input type="number" id="qty-besi" class="stepper-input" value="2" min="0" max="150" aria-label="Jumlah batang Besi 10mm" oninput="updateMaterialCalc()">
+                <button type="button" class="stepper-btn" aria-label="Tambah Besi 10mm" onclick="stepMaterial('besi', 1)">+</button>
+              </div>
+            </div>
+
+            <div class="calc-row" style="border-bottom: 0;">
+              <div>
+                <strong>Pasir cor</strong> <span style="color: var(--on-surface-variant); font-size: 0.85rem;">(Butuh 2 truk)</span>
+                <div style="font-size: 0.8125rem; color: var(--secondary); font-family: var(--font-mono);">Rp 3.300.000 / truk</div>
+              </div>
+              <div class="stepper">
+                <button type="button" class="stepper-btn" aria-label="Kurangi Pasir cor" onclick="stepMaterial('pasir', -1)">−</button>
+                <input type="number" id="qty-pasir" class="stepper-input" value="0" min="0" max="2" aria-label="Jumlah truk Pasir cor" oninput="updateMaterialCalc()">
+                <button type="button" class="stepper-btn" aria-label="Tambah Pasir cor" onclick="stepMaterial('pasir', 1)">+</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel" style="border-top: 3px solid var(--primary);">
+            <p class="kicker">Estimasi Nilai Donasi Anda</p>
+            <div id="calc-total-display" style="font-family: var(--font-headline); font-weight: 700; font-size: 2.35rem; color: var(--primary); font-variant-numeric: tabular-nums lining-nums;">Rp 880.000</div>
+            <p id="calc-breakdown-display" style="font-size: 0.875rem; color: var(--on-surface-variant); margin-top: var(--space-xs);">
+              Rincian: 1 lembar Bondek, 2 batang Besi 10mm.
+            </p>
+            <div class="hero-actions" style="margin-top: var(--space-md);">
+              <button type="button" class="btn btn-primary btn-sm" onclick="sendCalcToWa()">Kirim Rincian ke WhatsApp Panitia</button>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="resetMaterialCalc()">Reset Pilihan</button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Donasi Langsung Sekretariat & Peta Lokasi GPS -->
+      <div class="split-grid" id="sekretariat-lokasi">
+        <article class="panel">
+          <span class="badge badge-emerald" style="margin-bottom: var(--space-sm);">Sekretariat Panitia</span>
+          <h2 class="panel-heading">Donasi Material &amp; Tunai Langsung</h2>
+          <p>
+            Bagi donatur yang ingin mengantarkan bantuan bahan bangunan secara langsung (seperti Bondek, Besi 10mm, Pasir cor, atau material tahap lanjutan) maupun menyerahkan infak tunai dengan tanda terima resmi, silakan mendatangi Sekretariat Panitia di lokasi pembangunan Masjid Al-Barokah:
+          </p>
+          <div style="background: var(--surface-container-low); border-left: 3px solid var(--primary); padding: var(--space-md); border-radius: var(--rounded); margin-block: var(--space-md);">
+            <strong style="display: block; margin-bottom: 4px;">Alamat Sekretariat &amp; Lokasi Proyek:</strong>
+            <span>Jln. Babakan Dampyang Gantar, Blok Kedungkacip, RT 13 RW 04, Desa Tanjungkerta, Kec. Kroya, Kab. Indramayu, Jawa Barat 45265</span>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: var(--space-sm); align-items: center;">
+            <button type="button" class="btn btn-primary btn-sm" onclick="openWaDrawer('material')">Chat WA Panitia (083821110706)</button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="copyText('Jln. Babakan Dampyang Gantar, Blok Kedungkacip, RT 13 RW 04, Desa Tanjungkerta, Kec. Kroya, Kab. Indramayu, Jawa Barat 45265', 'alamat-copy-feedback', 'Alamat Lengkap Masjid Al-Barokah')">Salin Alamat Lengkap</button>
+          </div>
+          <div id="alamat-copy-feedback" class="copy-feedback" aria-live="polite"></div>
+        </article>
+
+        <!-- Schematic Vector GPS / Locator Map -->
+        <article class="schematic-map-wrap">
+          <div class="schematic-toolbar">
+            <div>
+              <strong style="font-size: 0.875rem; color: var(--on-surface);">Peta Skematik Lokasi Masjid Al-Barokah</strong>
+              <div style="font-size: 0.75rem; color: var(--on-surface-variant);">Desa Tanjungkerta, Kec. Kroya, Kab. Indramayu</div>
+            </div>
+            <div class="filter-bar">
+              <button type="button" class="filter-pill is-selected" id="pin-btn-masjid" onclick="selectMapPin('masjid')">Titik Masjid</button>
+              <button type="button" class="filter-pill" id="pin-btn-akses" onclick="selectMapPin('akses')">Akses Jalan</button>
+              <button type="button" class="filter-pill" id="pin-btn-wudu" onclick="selectMapPin('wudu')">Area Wudu &amp; Drop Material</button>
+            </div>
+          </div>
+
+          <div class="schematic-canvas">
+            <svg viewBox="0 0 520 230" width="100%" height="230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Peta Skematik Lokasi Masjid Al-Barokah di Jln. Babakan Dampyang Gantar, Blok Kedungkacip">
+              <!-- Road Axis -->
+              <path d="M 20 175 Q 190 155 500 130" stroke="#9b7d3e" stroke-width="14" stroke-linecap="round" fill="none" opacity="0.35"/>
+              <path d="M 20 175 Q 190 155 500 130" stroke="#8c6216" stroke-width="2" stroke-dasharray="8 6" fill="none"/>
+              <text x="165" y="196" font-family="Plus Jakarta Sans, sans-serif" font-size="11" font-weight="700" fill="#634309">Jln. Babakan Dampyang Gantar</text>
+
+              <!-- Neighborhood Zone Label -->
+              <rect x="115" y="24" width="290" height="122" rx="14" fill="#e0f0ea" fill-opacity="0.55" stroke="#0f5c43" stroke-width="1.5" stroke-dasharray="5 4"/>
+              <text x="260" y="44" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="11" font-weight="700" fill="#0a3e2d">BLOK KEDUNGKACIP • RT 13 RW 04 • DESA TANJUNGKERTA</text>
+
+              <!-- Masjid Al-Barokah New Building -->
+              <g class="map-hotspot" onclick="selectMapPin('masjid')">
+                <rect x="208" y="64" width="104" height="62" rx="8" fill="#0f5c43" stroke="#d4a644" stroke-width="2.5"/>
+                <text x="260" y="92" text-anchor="middle" font-family="Cormorant Garamond, serif" font-size="14" font-weight="700" fill="#ffffff">Masjid Baru</text>
+                <text x="260" y="109" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="10" fill="#f5e6be">Al-Barokah</text>
+              </g>
+
+              <!-- Tempat Wudu & Drop Material -->
+              <g class="map-hotspot" onclick="selectMapPin('wudu')">
+                <rect x="132" y="76" width="64" height="44" rx="6" fill="#f7ecd2" stroke="#8c6216" stroke-width="1.8"/>
+                <text x="164" y="96" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="9.5" font-weight="700" fill="#634309">Tempat</text>
+                <text x="164" y="108" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="9.5" font-weight="700" fill="#634309">Wudu</text>
+              </g>
+
+              <!-- Masjid Lama (To be demolished at Stage 12) -->
+              <g class="map-hotspot" onclick="selectMapPin('akses')">
+                <rect x="326" y="76" width="66" height="44" rx="6" fill="#e8e2d3" stroke="#9b7d3e" stroke-width="1.5" stroke-dasharray="3 2"/>
+                <text x="359" y="96" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="9.5" font-weight="600" fill="#44554c">Sekretariat &amp;</text>
+                <text x="359" y="108" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="9.5" font-weight="600" fill="#44554c">Masjid Lama</text>
+              </g>
+
+              <!-- Compass North -->
+              <g transform="translate(476, 36)">
+                <circle cx="0" cy="0" r="16" fill="#fffdf8" stroke="#9b7d3e" stroke-width="1.2"/>
+                <path d="M 0 -10 L 4 4 L 0 1 L -4 4 Z" fill="#0f5c43"/>
+                <text x="0" y="13" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="8" font-weight="700" fill="#15241d">U</text>
+              </g>
+            </svg>
+            <div id="map-pin-info" style="background: var(--surface-paper); border: var(--warm-hairline); border-radius: var(--rounded); padding: var(--space-sm) var(--space-md); margin-top: var(--space-sm); font-size: 0.85rem;">
+              <strong>Titik Lokasi Utama:</strong> Bangunan baru Masjid Al-Barokah di Blok Kedungkacip RT 13 RW 04, Desa Tanjungkerta, Kec. Kroya, Kab. Indramayu 45265. Gunakan tombol "Salin Alamat Lengkap" untuk navigasi GPS di aplikasi peta Anda.
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- 4. TRANSPARANSI ANGGARAN                              -->
+    <!-- ===================================================== -->
+    <section id="view-anggaran" class="view-section" role="tabpanel" aria-labelledby="tab-btn-anggaran" hidden>
+      <div>
+        <p class="kicker">Akuntabilitas &amp; Keterbukaan Dana</p>
+        <h1 class="section-title">Transparansi Anggaran &amp; <em>Kebutuhan Material</em></h1>
+        <p class="section-lede">
+          Rincian Rencana Anggaran Biaya (RAB) pembangunan total Masjid Al-Barokah sebesar Rp 665.684.000 beserta kebutuhan material aktif untuk pengecoran Dak Atap.
+        </p>
+      </div>
+
+      <!-- 3 Headline Budget Arch Cards -->
+      <div class="arch-grid">
+        <article class="arch-card is-featured">
+          <span class="arch-label">RAB Total Pembangunan</span>
+          <span class="arch-value">Rp 665.684.000</span>
+          <span class="arch-caption">Anggaran induk seluruh tahapan</span>
+        </article>
+        <article class="arch-card">
+          <span class="arch-label">Alokasi Material &amp; Alat</span>
+          <span class="arch-value">Rp 498.985.000</span>
+          <span class="arch-caption">74,96% dari total anggaran</span>
+        </article>
+        <article class="arch-card">
+          <span class="arch-label">Kebutuhan Dak Atap Tersisa</span>
+          <span class="arch-value">Rp 41.100.000</span>
+          <span class="arch-caption">Batu split Rp 3.000.000 sudah ada</span>
+        </article>
+      </div>
+
+      <!-- Visualisasi Alokasi RAB Total + Rincian 3 Pos -->
+      <div class="split-grid">
+        <article class="panel">
+          <p class="kicker">Proporsi Anggaran Induk</p>
+          <h2 class="panel-heading">Distribusi RAB Rp 665.684.000</h2>
+          <div class="chart-box">
+            <canvas id="rabAllocationChart" aria-label="Grafik Alokasi Anggaran Pembangunan Masjid Al-Barokah"></canvas>
+          </div>
+        </article>
+
+        <article class="panel">
+          <p class="kicker">Rincian Pos Anggaran</p>
+          <h2 class="panel-heading">Rekapitulasi Alokasi Biaya Pembangunan</h2>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Komponen Anggaran</th>
+                  <th class="num">Porsi</th>
+                  <th class="num">Nominal (Rp)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <strong>Material &amp; Alat</strong>
+                    <div style="font-size: 0.8rem; color: var(--on-surface-variant);">Pengadaan bahan konstruksi &amp; finishing</div>
+                  </td>
+                  <td class="num">74,96%</td>
+                  <td class="num">Rp 498.985.000</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Upah Kerja Borongan</strong>
+                    <div style="font-size: 0.8rem; color: var(--on-surface-variant);">Tenaga kerja konstruksi dari pondasi hingga finishing</div>
+                  </td>
+                  <td class="num">20,28%</td>
+                  <td class="num">Rp 135.000.000</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Biaya Operasional &amp; Tak Terduga (5%)</strong>
+                    <div style="font-size: 0.8rem; color: var(--on-surface-variant);">Cadangan operasional lapangan 5%</div>
+                  </td>
+                  <td class="num">4,76%</td>
+                  <td class="num">Rp 31.699.000</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td>Total RAB Pembangunan</td>
+                  <td class="num">100,00%</td>
+                  <td class="num">Rp 665.684.000</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </article>
+      </div>
+
+      <!-- Tabel Kebutuhan Material Aktif (Dak Atap) -->
+      <article class="panel">
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: var(--space-md); margin-bottom: var(--space-md);">
+          <div>
+            <p class="kicker">Tahap Target Aktif: Dak Atap</p>
+            <h2 class="panel-heading" style="margin-bottom: 0;">Kebutuhan Material Pengecoran Dak Atap</h2>
+          </div>
+          <div class="filter-bar" role="group" aria-label="Filter Status Material Dak Atap">
+            <button type="button" class="filter-pill is-selected" id="mat-filter-all" onclick="filterMaterialTable('all')">Semua (4)</button>
+            <button type="button" class="filter-pill" id="mat-filter-needed" onclick="filterMaterialTable('Dibutuhkan')">Dibutuhkan (3)</button>
+            <button type="button" class="filter-pill" id="mat-filter-ready" onclick="filterMaterialTable('Sudah Ada')">Sudah Ada (1)</button>
+          </div>
+        </div>
+
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Nama Material</th>
+                <th>Satuan</th>
+                <th class="num">Target</th>
+                <th class="num">Harga Satuan</th>
+                <th class="num">Total RAB</th>
+                <th class="num">Terkumpul</th>
+                <th class="num">Kekurangan</th>
+                <th class="num">Kekurangan Dana</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="material-table-body"></tbody>
+            <tfoot>
+              <tr>
+                <td colspan="5">Total Kebutuhan Tahap Dak Atap</td>
+                <td class="num">Rp 44.100.000</td>
+                <td class="num">Rp 3.000.000</td>
+                <td class="num">—</td>
+                <td class="num">Rp 41.100.000</td>
+                <td>6,8% Terpenuhi</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
+        <div style="margin-top: var(--space-md); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--space-md);">
+          <span style="font-size: 0.875rem; color: var(--on-surface-variant);">
+            Ingin berpartisipasi memenuhi kebutuhan Bondek, Besi 10mm, atau Pasir cor?
+          </span>
+          <button type="button" class="btn btn-primary btn-sm" onclick="switchTab('donasi', 'kalkulator-material')">Hitung Donasi Material di Tab Donasi</button>
+        </div>
+      </article>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- 5. PROGRES PEMBANGUNAN                                -->
+    <!-- ===================================================== -->
+    <section id="view-progres" class="view-section" role="tabpanel" aria-labelledby="tab-btn-progres" hidden>
+      <div>
+        <p class="kicker">Laporan Kemajuan Lapangan (12 Tahapan)</p>
+        <h1 class="section-title">Progres Fisik <em>Pembangunan Masjid</em></h1>
+        <p class="section-lede">
+          Pemantauan menyeluruh 12 tahap konstruksi Masjid Al-Barokah dari pekerjaan pondasi hingga pembongkaran bangunan masjid lama.
+        </p>
+      </div>
+
+      <!-- Ringkasan Status Tahapan -->
+      <div class="arch-grid">
+        <article class="arch-card is-featured">
+          <span class="arch-label">Tahap Selesai</span>
+          <span class="arch-value">6 Tahap</span>
+          <span class="arch-caption">Pondasi, wudu, urug, bata, serambi, sloof</span>
+        </article>
+        <article class="arch-card">
+          <span class="arch-label">Tahap Berjalan</span>
+          <span class="arch-value">1 Tahap</span>
+          <span class="arch-caption">Pengumpulan material Dak Atap</span>
+        </article>
+        <article class="arch-card">
+          <span class="arch-label">Tahap Belum Dikerjakan</span>
+          <span class="arch-value">5 Tahap</span>
+          <span class="arch-caption">Kubah, plester, plafon, keramik, bongkar lama</span>
+        </article>
+      </div>
+
+      <!-- Diagram Lapisan Struktur Bangunan Interaktif -->
+      <article class="elevation-card">
+        <div>
+          <p class="kicker">Diagram Struktur Interaktif</p>
+          <h2 class="panel-heading">Visualisasi Lapisan Pekerjaan Masjid</h2>
+          <p style="font-size: 0.9rem; color: var(--on-surface-variant);">
+            Klik salah satu lapisan pada diagram bangunan di samping untuk melihat status dan keterangannya secara langsung.
+          </p>
+          <div id="elevation-detail-box" class="panel-tinted" style="margin-top: var(--space-md);">
+            <span class="badge badge-gold">Tahap Berjalan • No. 7</span>
+            <h3 style="font-family: var(--font-headline); font-size: 1.35rem; margin: var(--space-xs) 0;">Dak Atap</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--on-surface-variant);">
+              Sedang pengumpulan material pengecoran dak (Bondek, Besi 10mm, Pasir cor).
+            </p>
+          </div>
+        </div>
+
+        <div>
+          <svg viewBox="0 0 360 250" width="100%" height="250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagram Struktur Vertikal Progres Pembangunan Masjid Al-Barokah">
+            <!-- Kubah (Belum - Tahap 8) -->
+            <g class="elevation-layer" onclick="inspectElevation('kubah')">
+              <path d="M 125 65 C 125 25, 235 25, 235 65 Z" fill="#e9e4d7" stroke="#9b7d3e" stroke-width="1.8" stroke-dasharray="4 3"/>
+              <line x1="180" y1="15" x2="180" y2="28" stroke="#9b7d3e" stroke-width="2"/>
+              <circle cx="180" cy="13" r="3" fill="#9b7d3e"/>
+              <text x="180" y="52" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="10.5" font-weight="700" fill="#4b554f">8. Kubah (Belum)</text>
+            </g>
+
+            <!-- Dak Atap (Berjalan - Tahap 7) -->
+            <g class="elevation-layer" onclick="inspectElevation('dak')">
+              <rect x="60" y="68" width="240" height="22" rx="4" fill="#faebd0" stroke="#c5912c" stroke-width="2.5"/>
+              <text x="180" y="83" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="11" font-weight="700" fill="#634309">7. Dak Atap — SEDANG BERJALAN</text>
+            </g>
+
+            <!-- Sloof Atas & Gantung (Selesai - Tahap 6) -->
+            <g class="elevation-layer" onclick="inspectElevation('sloof')">
+              <rect x="65" y="94" width="230" height="18" rx="3" fill="#0f5c43"/>
+              <text x="180" y="106.5" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="10" font-weight="700" fill="#ffffff">6. Sloof Atas &amp; Gantung (Selesai)</text>
+            </g>
+
+            <!-- Badan Utama, Pilar, Serambi & Finishing (Tahap 4, 5, 9, 10, 11) -->
+            <g class="elevation-layer" onclick="inspectElevation('dinding')">
+              <rect x="75" y="116" width="210" height="58" rx="4" fill="#e0f0ea" stroke="#0f5c43" stroke-width="2"/>
+              <text x="180" y="138" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="10.5" font-weight="700" fill="#0a3e2d">4 &amp; 5. Pilar, Bata Utama &amp; Serambi (Selesai)</text>
+              <text x="180" y="156" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="9.5" font-weight="600" fill="#44554c">9–11. Plester, Plafon &amp; Keramik (Tahap Berikutnya)</text>
+            </g>
+
+            <!-- Tempat Wudu (Selesai - Tahap 2) -->
+            <g class="elevation-layer" onclick="inspectElevation('wudu')">
+              <rect x="20" y="134" width="48" height="40" rx="4" fill="#dcf2e7" stroke="#15633f" stroke-width="1.5"/>
+              <text x="44" y="152" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="8.5" font-weight="700" fill="#15633f">2. Wudu</text>
+              <text x="44" y="164" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="8" fill="#15633f">(Selesai)</text>
+            </g>
+
+            <!-- Pondasi & Urug (Selesai - Tahap 1 & 3) -->
+            <g class="elevation-layer" onclick="inspectElevation('pondasi')">
+              <rect x="45" y="178" width="270" height="28" rx="4" fill="#15633f"/>
+              <text x="180" y="196" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="10.5" font-weight="700" fill="#ffffff">1 &amp; 3. Pondasi Utama &amp; Perataan / Urug (Selesai)</text>
+            </g>
+
+            <!-- Masjid Lama (Tahap 12) -->
+            <g class="elevation-layer" onclick="inspectElevation('bongkar')">
+              <rect x="295" y="134" width="52" height="40" rx="4" fill="#e9e4d7" stroke="#9b7d3e" stroke-width="1.2" stroke-dasharray="3 2"/>
+              <text x="321" y="152" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="8" font-weight="700" fill="#4b554f">12. Masjid</text>
+              <text x="321" y="163" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="8" fill="#4b554f">Lama</text>
+            </g>
+          </svg>
+        </div>
+      </article>
+
+      <!-- Daftar Lengkap 12 Tahap Pekerjaan -->
+      <article class="panel">
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: var(--space-md); margin-bottom: var(--space-md);">
+          <div>
+            <p class="kicker">Rincian 12 Tahap Pekerjaan</p>
+            <h2 class="panel-heading" style="margin-bottom: 0;">Daftar Status Pembangunan Fisik</h2>
+          </div>
+          <div class="filter-bar" role="group" aria-label="Filter Status Progres Pembangunan">
+            <button type="button" class="filter-pill is-selected" id="prog-filter-all" onclick="filterProgressTable('all')">Semua (12)</button>
+            <button type="button" class="filter-pill" id="prog-filter-done" onclick="filterProgressTable('Selesai')">Selesai (6)</button>
+            <button type="button" class="filter-pill" id="prog-filter-active" onclick="filterProgressTable('Berjalan')">Berjalan (1)</button>
+            <button type="button" class="filter-pill" id="prog-filter-todo" onclick="filterProgressTable('Belum')">Belum (5)</button>
+          </div>
+        </div>
+
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Tahap Pekerjaan</th>
+                <th>Status</th>
+                <th>Keterangan Lapangan</th>
+              </tr>
+            </thead>
+            <tbody id="progress-table-body"></tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+
+  </main>
+
+  <!-- Site Footer (Alamat, WhatsApp & Kredit Sumber) -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div>
+        <h2 class="footer-title">Panitia Pembangunan Masjid Al-Barokah</h2>
+        <p style="margin: 0 0 var(--space-sm) 0; max-width: 58ch;">
+          Jln. Babakan Dampyang Gantar, Blok Kedungkacip, RT 13 RW 04, Desa Tanjungkerta, Kec. Kroya, Kab. Indramayu, Jawa Barat 45265.
+        </p>
+        <p class="footer-note">
+          Sumber data: Proposal Pembangunan Masjid Al-Barokah, Catatan Progres &amp; RAB Kebutuhan Material, serta Data QRIS Resmi Masjid Al-Barokah.
+        </p>
+      </div>
+      <div style="display: grid; gap: var(--space-sm);">
+        <div style="font-size: var(--label-size); text-transform: uppercase; letter-spacing: 0.12em; color: var(--gold-soft); font-weight: 700;">Kontak &amp; Layanan Donatur</div>
+        <div style="font-family: var(--font-mono); font-size: 1.15rem; font-weight: 600;">WhatsApp Panitia: 083821110706</div>
+        <div style="display: flex; flex-wrap: wrap; gap: var(--space-sm); margin-top: var(--space-xs);">
+          <button type="button" class="btn btn-gold btn-sm" onclick="openWaDrawer('umum')">Chat WhatsApp Panitia</button>
+          <button type="button" class="btn btn-outline-light btn-sm" onclick="switchTab('donasi', 'sekretariat-lokasi')">Buka Peta Lokasi GPS</button>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Floating Tools / Widget Mengambang -->
+  <div class="floating-widget" aria-label="Alat Bantu Cepat Donasi dan WhatsApp">
+    <div id="wa-drawer" class="wa-drawer" role="dialog" aria-label="Panel Pesan WhatsApp Panitia Pembangunan">
+      <div class="wa-drawer-head">
+        <div>
+          <strong style="display: block; color: var(--primary); font-size: 0.95rem;">WhatsApp Panitia Pembangunan</strong>
+          <span style="font-family: var(--font-mono); font-size: 0.8125rem; color: var(--on-surface-variant);">083821110706 • Masjid Al-Barokah</span>
+        </div>
+        <button type="button" class="icon-close-btn" aria-label="Tutup panel WhatsApp" onclick="closeWaDrawer()">✕</button>
+      </div>
+
+      <div>
+        <label for="wa-template-select" class="field-label">Pilih Keperluan Pesan</label>
+        <select id="wa-template-select" class="select-input" onchange="applyWaTemplate(this.value)">
+          <option value="transfer">Konfirmasi Transfer Donasi (Mandiri / QRIS)</option>
+          <option value="material">Rencana Donasi Material Dak Atap</option>
+          <option value="survey">Tanya Lokasi / Kunjungan Sekretariat</option>
+          <option value="umum">Pertanyaan Umum Progres Pembangunan</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="wa-message-text" class="field-label">Draf Pesan WhatsApp (Dapat Diedit)</label>
+        <textarea id="wa-message-text" class="textarea-input"></textarea>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; gap: var(--space-xs);">
+        <button type="button" class="btn btn-primary btn-sm" style="flex: 1;" onclick="copyWaBundle()">Salin Pesan &amp; Nomor WA</button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="copyText('083821110706', 'wa-drawer-feedback', 'Nomor WhatsApp Panitia')">Salin Nomor</button>
+      </div>
+      <div id="wa-drawer-feedback" class="copy-feedback" aria-live="polite"></div>
+      <div style="font-size: 0.75rem; color: var(--on-surface-variant);">
+        Kirimkan pesan di atas ke nomor WhatsApp <strong>083821110706</strong> (tautan teks: <span style="font-family: var(--font-mono);">wa.me/6283821110706</span>).
+      </div>
+    </div>
+
+    <div class="floating-actions">
+      <button type="button" class="fab-btn fab-donate" onclick="switchTab('donasi', 'kartu-rekening-mandiri')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+        </svg>
+        <span>Donasi Cepat</span>
+      </button>
+      <button type="button" class="fab-btn fab-wa" onclick="toggleWaDrawer()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+        </svg>
+        <span>Chat WA</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast-banner" class="toast-banner" role="status" aria-live="polite"></div>
+
+  <script>
+    const PROGRESS_STAGES = [
+      { no: 1, tahap: `Pondasi masjid`, status: `Selesai`, keterangan: `Pekerjaan dasar pondasi utama` },
+      { no: 2, tahap: `Tempat wudu`, status: `Selesai`, keterangan: `Area tempat wudu sudah selesai` },
+      { no: 3, tahap: `Perataan pondasi masjid (urug pondasi)`, status: `Selesai`, keterangan: `Pengurugan dan perataan area pondasi` },
+      { no: 4, tahap: `Pilar dan pasangan bata merah badan utama masjid`, status: `Selesai`, keterangan: `Struktur pilar dan dinding bata badan utama` },
+      { no: 5, tahap: `Pilar dan Serambi masjid`, status: `Selesai`, keterangan: `Struktur pilar dan area serambi` },
+      { no: 6, tahap: `Sloof atas dan sloof gantung bangunan utama dan Serambi masjid`, status: `Selesai`, keterangan: `Pengecoran sloof atas dan sloof gantung` },
+      { no: 7, tahap: `Dak atap`, status: `Berjalan`, keterangan: `Sedang pengumpulan material pengecoran dak` },
+      { no: 8, tahap: `Kubah`, status: `Belum`, keterangan: `Tahap lanjutan setelah dak atap` },
+      { no: 9, tahap: `Plester tembok dan acian`, status: `Belum`, keterangan: `Pekerjaan finishing dinding` },
+      { no: 10, tahap: `Plafon`, status: `Belum`, keterangan: `Pemasangan plafon dalam dan serambi` },
+      { no: 11, tahap: `Keramik`, status: `Belum`, keterangan: `Pemasangan keramik lantai dan dinding` },
+      { no: 12, tahap: `Pembongkaran masjid lama`, status: `Belum`, keterangan: `Dilakukan setelah bangunan baru siap digunakan` }
+    ];
+
+    const DAK_MATERIALS = [
+      { no: 1, nama: `Bondek`, satuan: `lembar`, target: 30, harga: 700000, totalRab: 21000000, terkumpul: 0, kurangVol: 30, kurangDana: 21000000, status: `Dibutuhkan` },
+      { no: 2, nama: `Besi 10mm`, satuan: `batang`, target: 150, harga: 90000, totalRab: 13500000, terkumpul: 0, kurangVol: 150, kurangDana: 13500000, status: `Dibutuhkan` },
+      { no: 3, nama: `Pasir cor`, satuan: `truk`, target: 2, harga: 3300000, totalRab: 6600000, terkumpul: 0, kurangVol: 2, kurangDana: 6600000, status: `Dibutuhkan` },
+      { no: 4, nama: `Batu split`, satuan: `m³`, target: 10, harga: 300000, totalRab: 3000000, terkumpul: 10, kurangVol: 0, kurangDana: 0, status: `Sudah Ada` }
+    ];
+
+    const ELEVATION_INFO = {
+      kubah: {
+        badge: `Tahap Belum • No. 8`,
+        badgeClass: `badge-neutral`,
+        title: `Pemasangan Kubah Masjid`,
+        desc: `Tahap lanjutan setelah pengecoran dak atap selesai dilaksanakan.`
+      },
+      dak: {
+        badge: `Tahap Berjalan • No. 7`,
+        badgeClass: `badge-gold`,
+        title: `Pengecoran Dak Atap`,
+        desc: `Sedang pengumpulan material pengecoran dak (Bondek 30 lembar, Besi 10mm 150 batang, dan Pasir cor 2 truk).`
+      },
+      sloof: {
+        badge: `Tahap Selesai • No. 6`,
+        badgeClass: `badge-emerald`,
+        title: `Sloof Atas & Sloof Gantung`,
+        desc: `Pengecoran sloof atas dan sloof gantung bangunan utama dan serambi masjid telah selesai.`
+      },
+      dinding: {
+        badge: `Struktur Selesai (4–5) & Finishing Berikutnya (9–11)`,
+        badgeClass: `badge-emerald`,
+        title: `Pilar, Bata Merah, Serambi & Rencana Finishing`,
+        desc: `Pilar, dinding bata badan utama, dan pilar serambi sudah selesai. Plester acian, plafon, dan keramik menyusul setelah dak & kubah.`
+      },
+      wudu: {
+        badge: `Tahap Selesai • No. 2`,
+        badgeClass: `badge-emerald`,
+        title: `Area Tempat Wudu`,
+        desc: `Pekerjaan area tempat wudu Masjid Al-Barokah sudah selesai dibangun.`
+      },
+      pondasi: {
+        badge: `Tahap Selesai • No. 1 & 3`,
+        badgeClass: `badge-emerald`,
+        title: `Pondasi Utama & Urug Perataan`,
+        desc: `Pekerjaan dasar pondasi utama serta pengurugan dan perataan area pondasi telah selesai.`
+      },
+      bongkar: {
+        badge: `Tahap Akhir • No. 12`,
+        badgeClass: `badge-neutral`,
+        title: `Pembongkaran Masjid Lama`,
+        desc: `Dilakukan setelah bangunan masjid baru siap digunakan sepenuhnya oleh jamaah.`
+      }
+    };
+
+    const MAP_PINS = {
+      masjid: `<strong>Titik Lokasi Utama:</strong> Bangunan baru Masjid Al-Barokah di Blok Kedungkacip RT 13 RW 04, Desa Tanjungkerta, Kec. Kroya, Kab. Indramayu 45265. Gunakan tombol "Salin Alamat Lengkap" untuk navigasi GPS di aplikasi peta Anda.`,
+      akses: `<strong>Akses Jalan &amp; Sekretariat:</strong> Berada langsung di tepi Jln. Babakan Dampyang Gantar. Bangunan masjid lama di sisi kanan tetap difungsikan untuk ibadah sementara hingga bangunan baru siap.`,
+      wudu: `<strong>Area Tempat Wudu &amp; Drop Material:</strong> Area tempat wudu di sisi kiri telah selesai dibangun; halaman depan memadai untuk penurunan material pengecoran dak atap (Pasir cor, Bondek, Besi 10mm).`
+    };
+
+    let rabChartInstance = null;
+    let toastTimer = null;
+
+    function formatRupiah(angka) {
+      return `Rp ` + Number(angka).toLocaleString(`id-ID`);
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById(`toast-banner`);
+      if (!toast) return;
+      toast.textContent = message;
+      toast.classList.add(`is-visible`);
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function() {
+        toast.classList.remove(`is-visible`);
+      }, 2600);
+    }
+
+    function switchTab(tabName, scrollTargetId) {
+      const views = document.querySelectorAll(`.view-section`);
+      views.forEach(function(sec) {
+        sec.classList.remove(`is-active`);
+        sec.setAttribute(`hidden`, `hidden`);
+      });
+
+      const targetView = document.getElementById(`view-` + tabName);
+      if (targetView) {
+        targetView.removeAttribute(`hidden`);
+        targetView.classList.add(`is-active`);
+      }
+
+      const tabButtons = document.querySelectorAll(`.nav-tab`);
+      tabButtons.forEach(function(btn) {
+        btn.setAttribute(`aria-selected`, `false`);
+      });
+      const activeBtn = document.getElementById(`tab-btn-` + tabName);
+      if (activeBtn) {
+        activeBtn.setAttribute(`aria-selected`, `true`);
+      }
+
+      if (tabName === `anggaran`) {
+        renderRabChart();
+      }
+
+      if (scrollTargetId) {
+        const targetEl = document.getElementById(scrollTargetId);
+        if (targetEl) {
+          setTimeout(function() {
+            targetEl.scrollIntoView({ behavior: `smooth`, block: `start` });
+          }, 60);
+          return;
+        }
+      }
+      window.scrollTo({ top: 0, behavior: `smooth` });
+    }
+
+    function copyText(textValue, feedbackId, labelName) {
+      function onSuccess() {
+        const fb = document.getElementById(feedbackId);
+        if (fb) {
+          fb.textContent = labelName + ` berhasil disalin (` + textValue + `).`;
+        }
+        showToast(labelName + ` berhasil disalin!`);
+      }
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(textValue).then(onSuccess).catch(function() {
+          fallbackCopy(textValue, onSuccess);
+        });
+      } else {
+        fallbackCopy(textValue, onSuccess);
+      }
+    }
+
+    function fallbackCopy(textValue, callback) {
+      const temp = document.createElement(`textarea`);
+      temp.value = textValue;
+      temp.setAttribute(`readonly`, ``);
+      temp.style.position = `fixed`;
+      temp.style.opacity = `0`;
+      document.body.appendChild(temp);
+      temp.select();
+      try {
+        document.execCommand(`copy`);
+        callback();
+      } catch (err) {
+        showToast(`Silakan salin manual: ` + textValue);
+      }
+      document.body.removeChild(temp);
+    }
+
+    function renderMaterialTable(filterStatus) {
+      const tbody = document.getElementById(`material-table-body`);
+      if (!tbody) return;
+
+      const rows = DAK_MATERIALS.filter(function(item) {
+        return filterStatus === `all` || item.status === filterStatus;
+      });
+
+      tbody.innerHTML = rows.map(function(item) {
+        const badgeClass = item.status === `Sudah Ada` ? `badge-emerald` : `badge-gold`;
+        return `<tr>
+          <td>` + item.no + `</td>
+          <td><strong>` + item.nama + `</strong></td>
+          <td>` + item.satuan + `</td>
+          <td class="num">` + item.target + `</td>
+          <td class="num">` + formatRupiah(item.harga) + `</td>
+          <td class="num">` + formatRupiah(item.totalRab) + `</td>
+          <td class="num">` + item.terkumpul + `</td>
+          <td class="num">` + item.kurangVol + `</td>
+          <td class="num"><strong>` + formatRupiah(item.kurangDana) + `</strong></td>
+          <td><span class="badge ` + badgeClass + `">` + item.status + `</span></td>
+        </tr>`;
+      }).join(``);
+    }
+
+    function filterMaterialTable(filterStatus) {
+      const mapIds = {
+        all: `mat-filter-all`,
+        Dibutuhkan: `mat-filter-needed`,
+        'Sudah Ada': `mat-filter-ready`
+      };
+      Object.values(mapIds).forEach(function(id) {
+        const el = document.getElementById(id);
+        if (el) el.classList.remove(`is-selected`);
+      });
+      const activeEl = document.getElementById(mapIds[filterStatus]);
+      if (activeEl) activeEl.classList.add(`is-selected`);
+      renderMaterialTable(filterStatus);
+    }
+
+    function renderProgressTable(filterStatus) {
+      const tbody = document.getElementById(`progress-table-body`);
+      if (!tbody) return;
+
+      const rows = PROGRESS_STAGES.filter(function(item) {
+        return filterStatus === `all` || item.status === filterStatus;
+      });
+
+      tbody.innerHTML = rows.map(function(item) {
+        let badgeClass = `badge-neutral`;
+        if (item.status === `Selesai`) badgeClass = `badge-emerald`;
+        if (item.status === `Berjalan`) badgeClass = `badge-gold`;
+
+        return `<tr>
+          <td>` + item.no + `</td>
+          <td><strong>` + item.tahap + `</strong></td>
+          <td><span class="badge ` + badgeClass + `">` + item.status + `</span></td>
+          <td style="color: var(--on-surface-variant);">` + item.keterangan + `</td>
+        </tr>`;
+      }).join(``);
+    }
+
+    function filterProgressTable(filterStatus) {
+      const mapIds = {
+        all: `prog-filter-all`,
+        Selesai: `prog-filter-done`,
+        Berjalan: `prog-filter-active`,
+        Belum: `prog-filter-todo`
+      };
+      Object.values(mapIds).forEach(function(id) {
+        const el = document.getElementById(id);
+        if (el) el.classList.remove(`is-selected`);
+      });
+      const activeEl = document.getElementById(mapIds[filterStatus]);
+      if (activeEl) activeEl.classList.add(`is-selected`);
+      renderProgressTable(filterStatus);
+    }
+
+    function inspectElevation(key) {
+      const box = document.getElementById(`elevation-detail-box`);
+      const info = ELEVATION_INFO[key];
+      if (!box || !info) return;
+      box.innerHTML = `<span class="badge ` + info.badgeClass + `">` + info.badge + `</span>` +
+        `<h3 style="font-family: var(--font-headline); font-size: 1.35rem; margin: var(--space-xs) 0;">` + info.title + `</h3>` +
+        `<p style="margin: 0; font-size: 0.9rem; color: var(--on-surface-variant);">` + info.desc + `</p>`;
+    }
+
+    function selectMapPin(pinKey) {
+      const btns = {
+        masjid: `pin-btn-masjid`,
+        akses: `pin-btn-akses`,
+        wudu: `pin-btn-wudu`
+      };
+      Object.values(btns).forEach(function(id) {
+        const el = document.getElementById(id);
+        if (el) el.classList.remove(`is-selected`);
+      });
+      const active = document.getElementById(btns[pinKey]);
+      if (active) active.classList.add(`is-selected`);
+
+      const infoEl = document.getElementById(`map-pin-info`);
+      if (infoEl && MAP_PINS[pinKey]) {
+        infoEl.innerHTML = MAP_PINS[pinKey];
+      }
+    }
+
+    function stepMaterial(type, delta) {
+      const input = document.getElementById(`qty-` + type);
+      if (!input) return;
+      const min = Number(input.min || 0);
+      const max = Number(input.max || 999);
+      const next = Math.min(max, Math.max(min, Number(input.value || 0) + delta));
+      input.value = String(next);
+      updateMaterialCalc();
+    }
+
+    function updateMaterialCalc() {
+      const bondekEl = document.getElementById(`qty-bondek`);
+      const besiEl = document.getElementById(`qty-besi`);
+      const pasirEl = document.getElementById(`qty-pasir`);
+      const totalEl = document.getElementById(`calc-total-display`);
+      const detailEl = document.getElementById(`calc-breakdown-display`);
+      if (!bondekEl || !besiEl || !pasirEl || !totalEl || !detailEl) return;
+
+      const b = Math.max(0, Math.min(30, parseInt(bondekEl.value, 10) || 0));
+      const s = Math.max(0, Math.min(150, parseInt(besiEl.value, 10) || 0));
+      const p = Math.max(0, Math.min(2, parseInt(pasirEl.value, 10) || 0));
+
+      const total = (b * 700000) + (s * 90000) + (p * 3300000);
+      totalEl.textContent = formatRupiah(total);
+
+      const parts = [];
+      if (b > 0) parts.push(b + ` lembar Bondek`);
+      if (s > 0) parts.push(s + ` batang Besi 10mm`);
+      if (p > 0) parts.push(p + ` truk Pasir cor`);
+
+      detailEl.textContent = parts.length
+        ? `Rincian: ` + parts.join(`, `) + `.`
+        : `Pilih minimal satu satuan material untuk melihat estimasi kontribusi.`;
+    }
+
+    function resetMaterialCalc() {
+      const b = document.getElementById(`qty-bondek`);
+      const s = document.getElementById(`qty-besi`);
+      const p = document.getElementById(`qty-pasir`);
+      if (b) b.value = `0`;
+      if (s) s.value = `0`;
+      if (p) p.value = `0`;
+      updateMaterialCalc();
+    }
+
+    function sendCalcToWa() {
+      const totalEl = document.getElementById(`calc-total-display`);
+      const detailEl = document.getElementById(`calc-breakdown-display`);
+      const totalText = totalEl ? totalEl.textContent : `Rp 0`;
+      const detailText = detailEl ? detailEl.textContent : ``;
+
+      openWaDrawer(`material`);
+      const msgBox = document.getElementById(`wa-message-text`);
+      if (msgBox) {
+        msgBox.value = `Assalamu'alaikum Panitia Pembangunan Masjid Al-Barokah.\nSaya berniat berpartisipasi untuk pengadaan material Dak Atap.\n` +
+          detailText + `\nEstimasi nilai: ` + totalText + `.\nMohon arahannya untuk pengiriman/transfer melalui Bank Mandiri 1340031912743 (a.n. DULKARIM) atau langsung ke Sekretariat.`;
+      }
+    }
+
+    function applyWaTemplate(templateKey) {
+      const msgBox = document.getElementById(`wa-message-text`);
+      if (!msgBox) return;
+
+      const templates = {
+        transfer: `Assalamu'alaikum Panitia Pembangunan Masjid Al-Barokah.\nSaya telah menyalurkan infak/wakaf pembangunan masjid sebesar Rp [isi nominal] melalui [Bank Mandiri 1340031912743 / QRIS Masjid Al-Barokah].\nNama Donatur: [isi nama / Hamba Allah].\nSemoga menjadi amal jariyah dan pembangunan berjalan lancar.`,
+        material: `Assalamu'alaikum Panitia Pembangunan Masjid Al-Barokah.\nSaya ingin menanyakan kesiapan penerimaan donasi material tahap Dak Atap (Bondek / Besi 10mm / Pasir cor) di Sekretariat Blok Kedungkacip.`,
+        survey: `Assalamu'alaikum Panitia Pembangunan Masjid Al-Barokah.\nSaya berencana berkunjung ke lokasi pembangunan di Blok Kedungkacip, Desa Tanjungkerta, Kec. Kroya, Indramayu. Mohon informasi jadwal kehadiran pengurus di Sekretariat.`,
+        umum: `Assalamu'alaikum Panitia Pembangunan Masjid Al-Barokah.\nSaya ingin menanyakan informasi perkembangan pembangunan dan kebutuhan donasi terkini Masjid Al-Barokah.`
+      };
+      msgBox.value = templates[templateKey] || templates.umum;
+    }
+
+    function openWaDrawer(templateKey) {
+      const drawer = document.getElementById(`wa-drawer`);
+      const select = document.getElementById(`wa-template-select`);
+      if (!drawer) return;
+      if (select && templateKey) {
+        select.value = templateKey;
+      }
+      applyWaTemplate(templateKey || (select ? select.value : `transfer`));
+      drawer.classList.add(`is-open`);
+    }
+
+    function closeWaDrawer() {
+      const drawer = document.getElementById(`wa-drawer`);
+      if (drawer) drawer.classList.remove(`is-open`);
+    }
+
+    function toggleWaDrawer() {
+      const drawer = document.getElementById(`wa-drawer`);
+      if (!drawer) return;
+      if (drawer.classList.contains(`is-open`)) {
+        closeWaDrawer();
+      } else {
+        openWaDrawer(`transfer`);
+      }
+    }
+
+    function copyWaBundle() {
+      const msgBox = document.getElementById(`wa-message-text`);
+      const msg = msgBox ? msgBox.value.trim() : ``;
+      const fullBundle = `WhatsApp Panitia Masjid Al-Barokah: 083821110706\n\n` + msg;
+      copyText(fullBundle, `wa-drawer-feedback`, `Pesan & Nomor WA Panitia`);
+    }
+
+    function renderRabChart() {
+      if (typeof Chart === `undefined`) return;
+      const canvas = document.getElementById(`rabAllocationChart`);
+      if (!canvas) return;
+
+      if (rabChartInstance) {
+        rabChartInstance.resize();
+        return;
+      }
+
+      const styles = getComputedStyle(document.documentElement);
+      const c1 = styles.getPropertyValue(`--data-1`).trim() || `#0f5c43`;
+      const c2 = styles.getPropertyValue(`--data-2`).trim() || `#c5912c`;
+      const c3 = styles.getPropertyValue(`--data-3`).trim() || `#466d60`;
+      const ink = styles.getPropertyValue(`--on-surface`).trim() || `#15241d`;
+
+      rabChartInstance = new Chart(canvas, {
+        type: `doughnut`,
+        data: {
+          labels: [
+            `Material & Alat (Rp 498.985.000)`,
+            `Upah Kerja Borongan (Rp 135.000.000)`,
+            `Operasional & Tak Terduga 5% (Rp 31.699.000)`
+          ],
+          datasets: [{
+            data: [498985000, 135000000, 31699000],
+            backgroundColor: [c1, c2, c3],
+            borderWidth: 2,
+            borderColor: `#fffdf8`
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: `60%`,
+          plugins: {
+            legend: {
+              position: `bottom`,
+              labels: {
+                color: ink,
+                padding: 14,
+                font: {
+                  family: `'Plus Jakarta Sans', sans-serif`,
+                  size: 12,
+                  weight: `600`
+                }
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(ctx) {
+                  const val = Number(ctx.raw || 0);
+                  const pct = ((val / 665684000) * 100).toFixed(2).replace(`.`, `,`);
+                  return ` ` + formatRupiah(val) + ` (` + pct + `%)`;
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    document.addEventListener(`DOMContentLoaded`, function() {
+      renderMaterialTable(`all`);
+      renderProgressTable(`all`);
+      updateMaterialCalc();
+      applyWaTemplate(`transfer`);
+    });
+  </script>
+</body>
+</html>
