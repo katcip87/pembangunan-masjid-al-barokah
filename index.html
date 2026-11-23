@@ -358,7 +358,7 @@
       display: none;
     }
 
-    /* Badge Persentase & Mini Bar Kebutuhan Terkini */
+    /* Tombol Toggle & Badge Persentase Kebutuhan Terkini */
     .kebutuhan-subtitle {
       font-size: 0.88rem;
       font-weight: 600;
@@ -375,6 +375,30 @@
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 0.5rem;
       margin-bottom: 0.75rem;
+    }
+
+    .toggle-kebutuhan-btn {
+      width: 100%;
+      padding: 0.68rem 1rem;
+      border-radius: 8px;
+      border: 1.5px solid var(--primary);
+      background-color: var(--primary);
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 0.5rem;
+    }
+
+    .toggle-kebutuhan-btn.expanded {
+      background-color: #ffffff;
+      color: var(--primary);
+    }
+
+    .kebutuhan-panel {
+      margin-top: 0.35rem;
     }
 
     .pct-cell {
@@ -480,30 +504,29 @@
       flex: 1 1 120px;
     }
 
-    /* Progress Bar */
-    .progress-item {
-      margin-bottom: 0.9rem;
+    /* Progres pembangunan */
+    .progres-lines {
+      display: grid;
+      gap: 0.45rem;
+      margin-top: 0.35rem;
+      font-size: 0.92rem;
     }
 
-    .progress-label {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.9rem;
-      font-weight: 600;
-      margin-bottom: 0.3rem;
+    .progres-line {
+      padding: 0.5rem 0.7rem;
+      background-color: #f4f7f5;
+      border-radius: 6px;
+      color: var(--text);
     }
 
-    .progress-bar {
-      width: 100%;
-      height: 10px;
-      background-color: var(--border);
-      border-radius: 999px;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background-color: var(--primary);
+    .progres-debug {
+      font-size: 0.78rem;
+      color: var(--muted);
+      background-color: #f9fafb;
+      border: 1px dashed var(--border);
+      border-radius: 6px;
+      padding: 0.5rem 0.7rem;
+      word-break: break-word;
     }
 
     /* Galeri */
@@ -737,16 +760,766 @@
         </div>
       </div>
 
-      <div class="transparansi-status" id="kebutuhanStatus">Memuat data kebutuhan terkini...</div>
+      <button type="button" class="toggle-kebutuhan-btn" id="toggleKebutuhanBtn" onclick="toggleKebutuhanPanel()">
+        Lihat Kebutuhan Material
+      </button>
 
-      <div class="table-wrap">
-        <table>
-          <thead>
+      <div class="kebutuhan-panel hidden" id="kebutuhanPanel">
+        <div class="transparansi-status" id="kebutuhanStatus">Memuat data kebutuhan terkini...</div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Nama Barang</th>
+                <th>Jumlah</th>
+                <th class="num">Nilai (Rp)</th>
+                <th>Donasi Masuk</th>
+              </tr>
+            </thead>
+            <tbody id="kebutuhanBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="cta-kebutuhan">
+        <span>Ingin membantu memenuhi kebutuhan material di atas?</span>
+        <a href="#donasi">Salurkan Donasi</a>
+      </div>
+    </section>
+
+    <!-- Progres pembangunan -->
+    <section id="progres">
+      <h2>Progres pembangunan</h2>
+      <div class="progres-lines" id="progresList">Memuat...</div>
+    </section>
+
+    <section id="gallery">
+      <h2>Galeri Dokumentasi</h2>
+      <div class="gallery-grid">
+        <div class="gallery-item">Foto Kondisi Awal</div>
+        <div class="gallery-item">Foto Kerja Bakti</div>
+        <div class="gallery-item">Foto Pengiriman Material</div>
+        <div class="gallery-item">Desain Rencana Masjid</div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    &copy; 2026 Panitia Pembangunan Masjid Al-Barokah Tanjungkerta.
+  </footer>
+
+  <script>
+    function salinRekening(btn) {
+      const norek = document.getElementById('no-rek').innerText;
+      navigator.clipboard.writeText(norek).then(() => {
+        const teksAsli = btn.innerText;
+        btn.innerText = 'Nomor Tersalin!';
+        setTimeout(() => {
+          btn.innerText = teksAsli;
+        }, 2000);
+      });
+    }
+
+    function toggleKebutuhanPanel() {
+      const panel = document.getElementById("kebutuhanPanel");
+      const btn = document.getElementById("toggleKebutuhanBtn");
+      const isHidden = panel.classList.contains("hidden");
+
+      if (isHidden) {
+        panel.classList.remove("hidden");
+        btn.classList.add("expanded");
+        btn.textContent = "Sembunyikan Kebutuhan Material";
+      } else {
+        panel.classList.add("hidden");
+        btn.classList.remove("expanded");
+        btn.textContent = "Lihat Kebutuhan Material";
+      }
+    }
+
+    const PEMASUKAN_CSV_URL =
+      "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0PbZGpmP46zhEaPFcueYKlMcgaMigCpLW7wYzbcxj7_K9cY1945fCJnAaOgqVNdO5sHxWYmovpau-/pub?output=csv";
+
+    const PENGELUARAN_CSV_URL =
+      "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0PbZGpmP46zhEaPFcueYKlMcgaMigCpLW7wYzbcxj7_K9cY1945fCJnAaOgqVNdO5sHxWYmovpau-/pub?gid=1067549405&single=true&output=csv";
+
+    const KEBUTUHAN_CSV_URL =
+      "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0PbZGpmP46zhEaPFcueYKlMcgaMigCpLW7wYzbcxj7_K9cY1945fCJnAaOgqVNdO5sHxWYmovpau-/pub?gid=827325385&single=true&output=csv";
+
+    const PROGRES_CSV_URL =
+      "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0PbZGpmP46zhEaPFcueYKlMcgaMigCpLW7wYzbcxj7_K9cY1945fCJnAaOgqVNdO5sHxWYmovpau-/pub?gid=182096057&single=true&output=csv";
+
+    const ROWS_PER_PAGE = 15;
+
+    const BULAN_NAMES = [
+      "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+      "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+    ];
+
+    const statusText = document.getElementById("statusText");
+    const donasiBody = document.getElementById("donasiBody");
+    const pengeluaranBody = document.getElementById("pengeluaranBody");
+    const totalDonasiUangEl = document.getElementById("totalDonasiUang");
+    const totalDonasiMatrialEl = document.getElementById("totalDonasiMatrial");
+    const totalPengeluaranEl = document.getElementById("totalPengeluaran");
+    const sisaSaldoEl = document.getElementById("sisaSaldo");
+    const countPemasukanEl = document.getElementById("countPemasukan");
+    const countPengeluaranEl = document.getElementById("countPengeluaran");
+    const searchInput = document.getElementById("searchInput");
+    const jenisFilter = document.getElementById("jenisFilter");
+    const bulanFilter = document.getElementById("bulanFilter");
+    const resultBanner = document.getElementById("resultBanner");
+    const resultBannerMain = document.getElementById("resultBannerMain");
+    const resultBannerSub = document.getElementById("resultBannerSub");
+    const wrapPemasukan = document.getElementById("wrapPemasukan");
+    const wrapPengeluaran = document.getElementById("wrapPengeluaran");
+    const btnTabPemasukan = document.getElementById("btnTabPemasukan");
+    const btnTabPengeluaran = document.getElementById("btnTabPengeluaran");
+    const prevPageBtn = document.getElementById("prevPageBtn");
+    const nextPageBtn = document.getElementById("nextPageBtn");
+    const pageInfoEl = document.getElementById("pageInfo");
+
+    const kebutuhanSubtitleEl = document.getElementById("kebutuhanSubtitle");
+    const kebutuhanStatusEl = document.getElementById("kebutuhanStatus");
+    const kebutuhanBody = document.getElementById("kebutuhanBody");
+    const totalKebutuhanRpEl = document.getElementById("totalKebutuhanRp");
+    const totalKebutuhanMasukEl = document.getElementById("totalKebutuhanMasuk");
+
+    const progresListEl = document.getElementById("progresList");
+
+    let pemasukanRows = [];
+    let pengeluaranRows = [];
+    let activeTab = "pemasukan";
+    let currentPage = 1;
+
+    function parseCSV(text) {
+      const rows = [];
+      let row = [];
+      let cell = "";
+      let inQuotes = false;
+
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        const nextChar = text[i + 1];
+
+        if (inQuotes) {
+          if (char === '"' && nextChar === '"') {
+            cell += '"';
+            i++;
+          } else if (char === '"') {
+            inQuotes = false;
+          } else {
+            cell += char;
+          }
+        } else {
+          if (char === '"') {
+            inQuotes = true;
+          } else if (char === ",") {
+            row.push(cell.trim());
+            cell = "";
+          } else if (char === "\r" && nextChar === "\n") {
+            row.push(cell.trim());
+            rows.push(row);
+            row = [];
+            cell = "";
+            i++;
+          } else if (char === "\n" || char === "\r") {
+            row.push(cell.trim());
+            rows.push(row);
+            row = [];
+            cell = "";
+          } else {
+            cell += char;
+          }
+        }
+      }
+
+      if (cell.length > 0 || row.length > 0) {
+        row.push(cell.trim());
+        rows.push(row);
+      }
+
+      return rows;
+    }
+
+    function parseNumber(val) {
+      if (!val) return 0;
+      const cleaned = String(val).replace(/[^0-9.-]+/g, "");
+      const num = Number(cleaned);
+      return Number.isFinite(num) ? num : 0;
+    }
+
+    function formatRupiah(num) {
+      return new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        maximumFractionDigits: 0
+      }).format(num);
+    }
+
+    function extractMonthKey(dateStr) {
+      if (!dateStr) return null;
+      const cleaned = String(dateStr).trim().split(" ")[0];
+
+      const slashMatch = cleaned.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+      if (slashMatch) {
+        const month = parseInt(slashMatch[2], 10);
+        const year = parseInt(slashMatch[3], 10);
+        if (month >= 1 && month <= 12) {
+          return `${year}-${String(month).padStart(2, "0")}`;
+        }
+      }
+
+      const isoMatch = cleaned.match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})$/);
+      if (isoMatch) {
+        const year = parseInt(isoMatch[1], 10);
+        const month = parseInt(isoMatch[2], 10);
+        if (month >= 1 && month <= 12) {
+          return `${year}-${String(month).padStart(2, "0")}`;
+        }
+      }
+
+      const parsed = new Date(cleaned);
+      if (!Number.isNaN(parsed.getTime())) {
+        const year = parsed.getFullYear();
+        const month = parsed.getMonth() + 1;
+        return `${year}-${String(month).padStart(2, "0")}`;
+      }
+
+      return null;
+    }
+
+    function formatMonthLabel(monthKey) {
+      const [year, monthStr] = monthKey.split("-");
+      const idx = parseInt(monthStr, 10) - 1;
+      const monthName = BULAN_NAMES[idx] || monthStr;
+      return `${monthName} ${year}`;
+    }
+
+    function escapeHTML(str) {
+      return String(str ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function switchTab(tab) {
+      activeTab = tab;
+      currentPage = 1;
+
+      if (tab === "pemasukan") {
+        btnTabPemasukan.classList.add("active");
+        btnTabPengeluaran.classList.remove("active");
+        wrapPemasukan.classList.remove("hidden");
+        wrapPengeluaran.classList.add("hidden");
+        jenisFilter.classList.remove("hidden");
+        searchInput.placeholder = "Cari nama, alamat, atau barang...";
+      } else {
+        btnTabPengeluaran.classList.add("active");
+        btnTabPemasukan.classList.remove("active");
+        wrapPengeluaran.classList.remove("hidden");
+        wrapPemasukan.classList.add("hidden");
+        jenisFilter.classList.add("hidden");
+        jenisFilter.value = "";
+        searchInput.placeholder = "Cari nama barang atau tanggal...";
+      }
+      renderActiveTable();
+    }
+
+    function changePage(delta) {
+      currentPage += delta;
+      renderActiveTable();
+      document.getElementById("transparansi").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function updatePagination(totalFiltered) {
+      const totalPages = Math.max(1, Math.ceil(totalFiltered / ROWS_PER_PAGE));
+      if (currentPage > totalPages) currentPage = totalPages;
+      if (currentPage < 1) currentPage = 1;
+
+      pageInfoEl.textContent = `Halaman ${currentPage} dari ${totalPages}`;
+      prevPageBtn.disabled = currentPage <= 1 || totalFiltered === 0;
+      nextPageBtn.disabled = currentPage >= totalPages || totalFiltered === 0;
+    }
+
+    function populateJenisFilter(rows) {
+      const uniqueJenis = [...new Set(rows.map((r) => r.jenis).filter(Boolean))];
+      uniqueJenis.sort((a, b) => a.localeCompare(b, "id"));
+
+      jenisFilter.innerHTML = '<option value="">Semua Jenis</option>';
+      uniqueJenis.forEach((jenis) => {
+        const opt = document.createElement("option");
+        opt.value = jenis;
+        opt.textContent = jenis;
+        jenisFilter.appendChild(opt);
+      });
+    }
+
+    function populateBulanFilter() {
+      const keys = new Set();
+      pemasukanRows.forEach((r) => {
+        if (r.monthKey) keys.add(r.monthKey);
+      });
+      pengeluaranRows.forEach((r) => {
+        if (r.monthKey) keys.add(r.monthKey);
+      });
+
+      const sortedKeys = [...keys].sort((a, b) => b.localeCompare(a));
+      const prevSelected = bulanFilter.value;
+
+      bulanFilter.innerHTML = '<option value="">Semua Bulan</option>';
+      sortedKeys.forEach((key) => {
+        const opt = document.createElement("option");
+        opt.value = key;
+        opt.textContent = formatMonthLabel(key);
+        bulanFilter.appendChild(opt);
+      });
+
+      if (prevSelected && sortedKeys.includes(prevSelected)) {
+        bulanFilter.value = prevSelected;
+      }
+    }
+
+    function updateSummaryCards() {
+      let sumUang = 0;
+      let sumMatrial = 0;
+      let sumLainnya = 0;
+
+      pemasukanRows.forEach((item) => {
+        const j = item.jenis.trim().toLowerCase();
+        if (j.includes("uang") || j.includes("cash") || j.includes("tunai") || j.includes("transfer")) {
+          sumUang += item.nominalNum;
+        } else if (j.includes("matrial") || j.includes("material") || j.includes("barang")) {
+          sumMatrial += item.nominalNum;
+        } else {
+          sumLainnya += item.nominalNum;
+        }
+      });
+
+      const sumIn = sumUang + sumMatrial + sumLainnya;
+      const sumOut = pengeluaranRows.reduce((acc, item) => acc + item.jumlahHargaNum, 0);
+      const saldo = sumIn - sumOut;
+
+      totalDonasiUangEl.textContent = formatRupiah(sumUang);
+      totalDonasiMatrialEl.textContent = formatRupiah(sumMatrial);
+      totalPengeluaranEl.textContent = formatRupiah(sumOut);
+      sisaSaldoEl.textContent = formatRupiah(saldo);
+      countPemasukanEl.textContent = pemasukanRows.length;
+      countPengeluaranEl.textContent = pengeluaranRows.length;
+    }
+
+    function updateResultBanner(filtered, totalNominalFiltered, keyword, selectedJenis, selectedMonth) {
+      const hasSearch = keyword.length > 0;
+      const hasJenis = activeTab === "pemasukan" && Boolean(selectedJenis);
+      const hasMonth = Boolean(selectedMonth);
+
+      if (!hasSearch && !hasJenis && !hasMonth) {
+        resultBanner.classList.add("hidden");
+        return;
+      }
+
+      resultBanner.classList.remove("hidden");
+
+      const parts = [];
+      if (hasSearch) parts.push(`kata kunci "${searchInput.value.trim()}"`);
+      if (hasJenis) parts.push(`jenis "${selectedJenis}"`);
+      if (hasMonth) parts.push(`bulan ${formatMonthLabel(selectedMonth)}`);
+
+      resultBannerMain.textContent = `${formatRupiah(totalNominalFiltered)} (${filtered.length} baris)`;
+
+      if (hasMonth) {
+        const monthIn = pemasukanRows
+          .filter((r) => r.monthKey === selectedMonth)
+          .reduce((acc, r) => acc + r.nominalNum, 0);
+        const monthOut = pengeluaranRows
+          .filter((r) => r.monthKey === selectedMonth)
+          .reduce((acc, r) => acc + r.jumlahHargaNum, 0);
+        const monthNet = monthIn - monthOut;
+
+        resultBannerSub.textContent =
+          `${formatMonthLabel(selectedMonth)} · Masuk ${formatRupiah(monthIn)} · Keluar ${formatRupiah(monthOut)} · Selisih ${formatRupiah(monthNet)}`;
+      } else {
+        resultBannerSub.textContent = parts.join(" · ");
+      }
+    }
+
+    function renderActiveTable() {
+      const keyword = searchInput.value.trim().toLowerCase();
+      const selectedMonth = bulanFilter.value;
+
+      if (activeTab === "pemasukan") {
+        const selectedJenis = jenisFilter.value;
+        const filtered = pemasukanRows.filter((item) => {
+          const matchesJenis = !selectedJenis || item.jenis === selectedJenis;
+          const matchesMonth = !selectedMonth || item.monthKey === selectedMonth;
+          const searchable = [
+            item.nama,
+            item.jenis,
+            item.alamat,
+            item.namaBarang,
+            item.tanggal
+          ]
+            .join(" ")
+            .toLowerCase();
+          return matchesJenis && matchesMonth && (!keyword || searchable.includes(keyword));
+        });
+
+        const totalNominalFiltered = filtered.reduce((acc, item) => acc + item.nominalNum, 0);
+        updateResultBanner(filtered, totalNominalFiltered, keyword, selectedJenis, selectedMonth);
+
+        updatePagination(filtered.length);
+        const startIdx = (currentPage - 1) * ROWS_PER_PAGE;
+        const pageItems = filtered.slice(startIdx, startIdx + ROWS_PER_PAGE);
+
+        if (filtered.length === 0) {
+          statusText.textContent = `Menampilkan 0 dari ${pemasukanRows.length} data pemasukan.`;
+          donasiBody.innerHTML =
+            '<tr><td colspan="10" style="text-align:center; padding:18px;">Tidak ada data pemasukan yang cocok.</td></tr>';
+          return;
+        }
+
+        const endIdx = startIdx + pageItems.length;
+        statusText.textContent = `Menampilkan baris ${startIdx + 1}–${endIdx} dari ${filtered.length} data pemasukan.`;
+
+        donasiBody.innerHTML = pageItems
+          .map((item, i) => `
             <tr>
-              <th>Nama Barang</th>
-              <th>Jumlah</th>
-              <th class="num">Nilai (Rp)</th>
-              <th>Donasi Masuk</th>
+              <td>${startIdx + i + 1}</td>
+              <td>${escapeHTML(item.nama)}</td>
+              <td class="num">${item.nominalNum > 0 ? formatRupiah(item.nominalNum) : escapeHTML(item.nominalRaw)}</td>
+              <td>${escapeHTML(item.jenis)}</td>
+              <td>${escapeHTML(item.alamat)}</td>
+              <td>${escapeHTML(item.namaBarang)}</td>
+              <td>${escapeHTML(item.satuan)}</td>
+              <td class="num">${escapeHTML(item.volume)}</td>
+              <td class="num">${escapeHTML(item.hargaSatuan)}</td>
+              <td>${escapeHTML(item.tanggal)}</td>
             </tr>
-          </thead>
-          <tbody id="kebutuha
+          `)
+          .join("");
+      } else {
+        const filtered = pengeluaranRows.filter((item) => {
+          const matchesMonth = !selectedMonth || item.monthKey === selectedMonth;
+          const searchable = [
+            item.namaBarang,
+            item.satuan,
+            item.tanggal
+          ]
+            .join(" ")
+            .toLowerCase();
+          return matchesMonth && (!keyword || searchable.includes(keyword));
+        });
+
+        const totalNominalFiltered = filtered.reduce((acc, item) => acc + item.jumlahHargaNum, 0);
+        updateResultBanner(filtered, totalNominalFiltered, keyword, "", selectedMonth);
+
+        updatePagination(filtered.length);
+        const startIdx = (currentPage - 1) * ROWS_PER_PAGE;
+        const pageItems = filtered.slice(startIdx, startIdx + ROWS_PER_PAGE);
+
+        if (filtered.length === 0) {
+          statusText.textContent = `Menampilkan 0 dari ${pengeluaranRows.length} data pengeluaran.`;
+          pengeluaranBody.innerHTML =
+            '<tr><td colspan="7" style="text-align:center; padding:18px;">Tidak ada data pengeluaran yang cocok.</td></tr>';
+          return;
+        }
+
+        const endIdx = startIdx + pageItems.length;
+        statusText.textContent = `Menampilkan baris ${startIdx + 1}–${endIdx} dari ${filtered.length} data pengeluaran.`;
+
+        pengeluaranBody.innerHTML = pageItems
+          .map((item, i) => `
+            <tr>
+              <td>${startIdx + i + 1}</td>
+              <td>${escapeHTML(item.namaBarang)}</td>
+              <td>${escapeHTML(item.satuan)}</td>
+              <td class="num">${escapeHTML(item.volume)}</td>
+              <td class="num">${item.hargaSatuanNum > 0 ? formatRupiah(item.hargaSatuanNum) : escapeHTML(item.hargaSatuanRaw)}</td>
+              <td class="num">${item.jumlahHargaNum > 0 ? formatRupiah(item.jumlahHargaNum) : escapeHTML(item.jumlahHargaRaw)}</td>
+              <td>${escapeHTML(item.tanggal)}</td>
+            </tr>
+          `)
+          .join("");
+      }
+    }
+
+    function renderKebutuhanTerkini(rawRows) {
+      let headerIdx = rawRows.findIndex((cols) =>
+        cols.some((c) => c.toLowerCase().replace(/\s+/g, "") === "namabarang")
+      );
+
+      if (headerIdx === -1) {
+        headerIdx = 0;
+      } else if (headerIdx > 0) {
+        const titleCell = rawRows[0].find((c) => c.trim() !== "");
+        if (titleCell) {
+          kebutuhanSubtitleEl.textContent = titleCell.trim();
+        }
+      }
+
+      const items = rawRows
+        .slice(headerIdx + 1)
+        .filter((cols) => cols[0] && cols[0].trim() !== "")
+        .map((cols) => {
+          const namaBarang = cols[0] || "";
+          const satuan = cols[1] || "";
+          const volume = cols[2] || "";
+          const hargaSatuanNum = parseNumber(cols[3]);
+          const jumlahHargaNum = parseNumber(cols[4]);
+          const donasiMasukNum = parseNumber(cols[5]);
+
+          const persenRaw = jumlahHargaNum > 0 ? (donasiMasukNum / jumlahHargaNum) * 100 : 0;
+          const persenBulat = Math.round(persenRaw);
+          const barWidth = Math.min(100, Math.max(0, persenRaw));
+
+          return {
+            namaBarang,
+            satuan,
+            volume,
+            hargaSatuanNum,
+            jumlahHargaNum,
+            donasiMasukNum,
+            persenBulat,
+            barWidth
+          };
+        });
+
+      const totalButuh = items.reduce((acc, it) => acc + it.jumlahHargaNum, 0);
+      const totalMasuk = items.reduce((acc, it) => acc + it.donasiMasukNum, 0);
+      const totalPersen = totalButuh > 0 ? Math.round((totalMasuk / totalButuh) * 100) : 0;
+
+      totalKebutuhanRpEl.textContent = formatRupiah(totalButuh);
+      totalKebutuhanMasukEl.textContent = `${totalPersen}%`;
+      kebutuhanStatusEl.textContent = `Menampilkan ${items.length} item kebutuhan material terkini.`;
+
+      if (items.length === 0) {
+        kebutuhanBody.innerHTML =
+          '<tr><td colspan="4" style="text-align:center; padding:16px;">Belum ada data kebutuhan terkini.</td></tr>';
+        return;
+      }
+
+      kebutuhanBody.innerHTML = items
+        .map((it) => {
+          const jumlahText = `${escapeHTML(it.volume)} ${escapeHTML(it.satuan)}`.trim();
+          const nilaiText = it.jumlahHargaNum > 0 ? formatRupiah(it.jumlahHargaNum) : "-";
+          const masukSub = it.donasiMasukNum > 0 ? formatRupiah(it.donasiMasukNum) : "Belum ada";
+
+          return `
+            <tr>
+              <td><strong>${escapeHTML(it.namaBarang)}</strong></td>
+              <td style="white-space: nowrap;">${jumlahText}</td>
+              <td class="num">${nilaiText}</td>
+              <td class="pct-cell">
+                <div class="pct-header">
+                  <span>${it.persenBulat}%</span>
+                  <span class="pct-sub">${masukSub}</span>
+                </div>
+                <div class="mini-bar">
+                  <div class="mini-bar-fill" style="width: ${it.barWidth}%;"></div>
+                </div>
+              </td>
+            </tr>
+          `;
+        })
+        .join("");
+    }
+
+    function capitalizeFirst(str) {
+      const s = String(str || "").trim();
+      if (!s) return "";
+      return s.charAt(0).toUpperCase() + s.slice(1);
+    }
+
+    function isSkippedLabel(val) {
+      const s = String(val || "").trim().toLowerCase();
+      if (!s) return true;
+      const ignored = new Set([
+        "progres pembangunan",
+        "foto",
+        "status",
+        "persentase",
+        "progres",
+        "keterangan"
+      ]);
+      if (ignored.has(s)) return true;
+      if (/^\d+(?:[.,]\d+)?\s*%?$/.test(s)) return true;
+      return false;
+    }
+
+    function isStatusValue(val) {
+      const s = String(val || "").trim().toLowerCase();
+      if (!s || s === "status") return false;
+      if (/%/.test(s)) return true;
+      if (s.includes("proses") || s.includes("selesai") || s.includes("belum") || s.includes("dikerjakan")) {
+        return true;
+      }
+      return false;
+    }
+
+    function renderProgresPembangunan(rawRows) {
+      const nonEmptyRows = (rawRows || []).filter((cols) =>
+        cols.some((cell) => String(cell || "").trim() !== "")
+      );
+
+      const lines = [];
+
+      for (let i = 0; i < nonEmptyRows.length; i++) {
+        const cols = nonEmptyRows[i];
+        const nonEmptyCells = cols.map((c) => String(c || "").trim()).filter(Boolean);
+
+        let nama = "";
+        let nilai = "";
+
+        for (let cIdx = 0; cIdx < cols.length; cIdx++) {
+          const cell = String(cols[cIdx] || "").trim();
+          if (!cell) continue;
+          if (!nama && !isSkippedLabel(cell)) {
+            nama = cell;
+          } else if (!nilai && isStatusValue(cell)) {
+            nilai = cell;
+          }
+        }
+
+        if (!nama && nonEmptyCells.length >= 2) {
+          const first = nonEmptyCells[0];
+          const last = nonEmptyCells[nonEmptyCells.length - 1];
+          if (!isSkippedLabel(first) && isStatusValue(last)) {
+            nama = first;
+            nilai = last;
+          }
+        }
+
+        if (nama && !nilai) {
+          for (let offset = 1; offset <= 4 && i + offset < nonEmptyRows.length; offset++) {
+            const nextCells = nonEmptyRows[i + offset].map((c) => String(c || "").trim()).filter(Boolean);
+            const nextNama = nextCells.find((c) => !isSkippedLabel(c));
+            if (nextNama && nextNama.toLowerCase() !== nama.toLowerCase()) break;
+            const foundStatus = nextCells.find((c) => isStatusValue(c));
+            if (foundStatus) {
+              nilai = foundStatus;
+              break;
+            }
+          }
+        }
+
+        if (nama && nilai) {
+          const formatted = `${capitalizeFirst(nama)} | ${nilai}`;
+          if (!lines.includes(formatted)) {
+            lines.push(formatted);
+          }
+        }
+      }
+
+      if (lines.length === 0) {
+        const preview = nonEmptyRows
+          .slice(0, 5)
+          .map((r) => r.filter(Boolean).join(" / "))
+          .filter(Boolean)
+          .join(" • ");
+
+        progresListEl.innerHTML = `
+          <div class="progres-line">Belum ada data progres.</div>
+          <div class="progres-debug">
+            Baris CSV terbaca: ${nonEmptyRows.length}${preview ? ` | Contoh isi: ${escapeHTML(preview)}` : " | Pastikan tab Progres sudah dipublikasikan ke web di Google Sheets."}
+          </div>
+        `;
+        return;
+      }
+
+      progresListEl.innerHTML = lines
+        .map((line) => `<div class="progres-line">${escapeHTML(line)}</div>`)
+        .join("");
+    }
+
+    async function loadDataKeuangan() {
+      try {
+        const [resIn, resOut, resKebutuhan, resProgres] = await Promise.all([
+          fetch(PEMASUKAN_CSV_URL),
+          fetch(PENGELUARAN_CSV_URL),
+          fetch(KEBUTUHAN_CSV_URL),
+          fetch(PROGRES_CSV_URL)
+        ]);
+
+        if (!resIn.ok || !resOut.ok || !resKebutuhan.ok || !resProgres.ok) {
+          throw new Error("Gagal mengambil data dari Google Sheets.");
+        }
+
+        const [csvIn, csvOut, csvKebutuhan, csvProgres] = await Promise.all([
+          resIn.text(),
+          resOut.text(),
+          resKebutuhan.text(),
+          resProgres.text()
+        ]);
+
+        pemasukanRows = parseCSV(csvIn)
+          .slice(1)
+          .filter((cols) => cols.some((cell) => cell !== ""))
+          .map((cols) => {
+            const tanggal = cols[8] || "";
+            return {
+              nama: cols[0] || "",
+              nominalRaw: cols[1] || "",
+              nominalNum: parseNumber(cols[1]),
+              jenis: cols[2] || "",
+              alamat: cols[3] || "",
+              namaBarang: cols[4] || "",
+              satuan: cols[5] || "",
+              volume: cols[6] || "",
+              hargaSatuan: cols[7] || "",
+              tanggal,
+              monthKey: extractMonthKey(tanggal)
+            };
+          });
+
+        pengeluaranRows = parseCSV(csvOut)
+          .slice(1)
+          .filter((cols) => cols.some((cell) => cell !== ""))
+          .map((cols) => {
+            const tanggal = cols[5] || "";
+            return {
+              namaBarang: cols[0] || "",
+              satuan: cols[1] || "",
+              volume: cols[2] || "",
+              hargaSatuanRaw: cols[3] || "",
+              hargaSatuanNum: parseNumber(cols[3]),
+              jumlahHargaRaw: cols[4] || "",
+              jumlahHargaNum: parseNumber(cols[4]),
+              tanggal,
+              monthKey: extractMonthKey(tanggal)
+            };
+          });
+
+        populateJenisFilter(pemasukanRows);
+        populateBulanFilter();
+        updateSummaryCards();
+        renderActiveTable();
+        renderKebutuhanTerkini(parseCSV(csvKebutuhan));
+        renderProgresPembangunan(parseCSV(csvProgres));
+      } catch (err) {
+        statusText.textContent = "Terjadi kesalahan: " + err.message;
+        kebutuhanStatusEl.textContent = "Terjadi kesalahan memuat data kebutuhan.";
+        progresListEl.innerHTML = '<div class="progres-line">Gagal memuat data progres.</div>';
+      }
+    }
+
+    searchInput.addEventListener("input", () => {
+      currentPage = 1;
+      renderActiveTable();
+    });
+
+    jenisFilter.addEventListener("change", () => {
+      currentPage = 1;
+      renderActiveTable();
+    });
+
+    bulanFilter.addEventListener("change", () => {
+      currentPage = 1;
+      renderActiveTable();
+    });
+
+    loadDataKeuangan();
+  </script>
+
+</body>
+</html>
