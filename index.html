@@ -11,6 +11,10 @@
       --primary: #14532d;
       --primary-dark: #0f3f22;
       --primary-light: #dcfce7;
+      --danger-bg: #fef2f2;
+      --danger-text: #991b1b;
+      --info-bg: #f0fdf4;
+      --info-border: #86efac;
       --text: #1f2937;
       --muted: #4b5563;
       --border: #e5e7eb;
@@ -187,45 +191,95 @@
       min-width: 0;
     }
 
-    /* Ringkasan & Kontrol Transparansi */
+    /* Ringkasan Keuangan: 2 Kolom Sejajar per Baris, Nominal 1 Baris */
     .transparansi-summary {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 0.75rem;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.5rem;
       margin-top: 0.75rem;
-      margin-bottom: 0.85rem;
+      margin-bottom: 0.9rem;
     }
 
     .summary-card {
       background-color: var(--bg);
       border: 1px solid var(--border);
       border-radius: 10px;
-      padding: 0.85rem 1rem;
+      padding: 0.7rem 0.65rem;
       min-width: 0;
+      overflow: hidden;
+    }
+
+    .summary-card.pengeluaran-card {
+      background-color: var(--danger-bg);
+      border-color: #fecaca;
+    }
+
+    .summary-card.saldo-card {
+      background-color: var(--primary-light);
+      border-color: #bbf7d0;
     }
 
     .summary-label {
-      font-size: 0.82rem;
+      font-size: 0.76rem;
       color: var(--muted);
+      line-height: 1.25;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .summary-value {
-      font-size: 1.15rem;
+      font-size: clamp(0.76rem, 3.1vw, 1.05rem);
       font-weight: 700;
       color: var(--primary);
-      margin-top: 0.15rem;
-      word-break: break-word;
+      margin-top: 0.25rem;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.2px;
     }
 
+    .pengeluaran-card .summary-value {
+      color: var(--danger-text);
+    }
+
+    /* Tab Pemasukan vs Pengeluaran */
+    .tab-buttons {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 0.6rem 0.75rem;
+      border-radius: 8px;
+      border: 1.5px solid var(--border);
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background-color: var(--primary);
+      border-color: var(--primary);
+      color: #ffffff;
+    }
+
+    /* Toolbar Filter & Pencarian */
     .transparansi-toolbar {
       display: flex;
-      flex-wrap: wrap;
+      flex-direction: column;
       gap: 0.6rem;
       margin-bottom: 0.65rem;
     }
 
     .transparansi-toolbar input,
     .transparansi-toolbar select {
+      width: 100%;
       font-family: inherit;
       font-size: 0.9rem;
       padding: 0.55rem 0.75rem;
@@ -236,9 +290,26 @@
       max-width: 100%;
     }
 
-    .transparansi-toolbar input {
-      flex: 1 1 180px;
-      min-width: 0;
+    /* Kotak Ringkasan Pencarian / Arus Bulanan */
+    .result-banner {
+      background-color: var(--info-bg);
+      border: 1px solid var(--info-border);
+      border-radius: 10px;
+      padding: 0.75rem 0.9rem;
+      margin-bottom: 0.65rem;
+      font-size: 0.88rem;
+      color: var(--text);
+    }
+
+    .result-banner-main {
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.2rem;
+    }
+
+    .result-banner-sub {
+      font-size: 0.82rem;
+      color: var(--muted);
     }
 
     .transparansi-status {
@@ -259,7 +330,7 @@
       width: 100%;
       border-collapse: collapse;
       font-size: 0.88rem;
-      min-width: 640px;
+      min-width: 600px;
     }
 
     th, td {
@@ -278,6 +349,55 @@
     .num {
       text-align: right;
       white-space: nowrap;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* Paginasi Tabel */
+    .pagination-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-top: 0.85rem;
+      padding-top: 0.65rem;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    .page-btn {
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 600;
+      padding: 0.5rem 0.85rem;
+      border-radius: 8px;
+      border: 1.5px solid var(--primary);
+      background-color: #ffffff;
+      color: var(--primary);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .page-btn:hover:not(:disabled) {
+      background-color: var(--primary);
+      color: #ffffff;
+    }
+
+    .page-btn:disabled {
+      border-color: var(--border);
+      color: #9ca3af;
+      background-color: var(--bg);
+      cursor: not-allowed;
+    }
+
+    .page-info {
+      font-size: 0.86rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-align: center;
+      flex: 1 1 120px;
     }
 
     /* Progress Bar */
@@ -419,17 +539,35 @@
 
     <section id="transparansi">
       <h2>Transparansi Dana</h2>
-      <p>Rekap data donasi yang terhubung otomatis dari Google Sheets:</p>
+      <p>Rekap pemasukan dan pengeluaran dana pembangunan yang terhubung langsung ke Google Sheets:</p>
 
+      <!-- Baris 1: Donasi Uang & Donasi Matrial | Baris 2: Total Pengeluaran & Sisa Saldo Kas -->
       <div class="transparansi-summary">
         <div class="summary-card">
-          <div class="summary-label">Total Nominal Tercatat</div>
-          <div class="summary-value" id="totalNominal">Rp 0</div>
+          <div class="summary-label">Donasi Uang</div>
+          <div class="summary-value" id="totalDonasiUang">Rp 0</div>
         </div>
         <div class="summary-card">
-          <div class="summary-label">Jumlah Baris Ditampilkan</div>
-          <div class="summary-value" id="totalRows">0</div>
+          <div class="summary-label">Donasi Matrial</div>
+          <div class="summary-value" id="totalDonasiMatrial">Rp 0</div>
         </div>
+        <div class="summary-card pengeluaran-card">
+          <div class="summary-label">Total Pengeluaran</div>
+          <div class="summary-value" id="totalPengeluaran">Rp 0</div>
+        </div>
+        <div class="summary-card saldo-card">
+          <div class="summary-label">Sisa Saldo Kas</div>
+          <div class="summary-value" id="sisaSaldo">Rp 0</div>
+        </div>
+      </div>
+
+      <div class="tab-buttons">
+        <button type="button" class="tab-btn active" id="btnTabPemasukan" onclick="switchTab('pemasukan')">
+          Pemasukan (<span id="countPemasukan">0</span>)
+        </button>
+        <button type="button" class="tab-btn" id="btnTabPengeluaran" onclick="switchTab('pengeluaran')">
+          Pengeluaran (<span id="countPengeluaran">0</span>)
+        </button>
       </div>
 
       <div class="transparansi-toolbar">
@@ -437,11 +575,20 @@
         <select id="jenisFilter">
           <option value="">Semua Jenis</option>
         </select>
+        <select id="bulanFilter">
+          <option value="">Semua Bulan</option>
+        </select>
       </div>
 
-      <div class="transparansi-status" id="statusText">Memuat data donasi...</div>
+      <div class="result-banner hidden" id="resultBanner">
+        <div class="result-banner-main" id="resultBannerMain"></div>
+        <div class="result-banner-sub" id="resultBannerSub"></div>
+      </div>
 
-      <div class="table-wrap">
+      <div class="transparansi-status" id="statusText">Memuat data keuangan...</div>
+
+      <!-- Tabel Pemasukan -->
+      <div class="table-wrap" id="wrapPemasukan">
         <table>
           <thead>
             <tr>
@@ -459,6 +606,35 @@
           </thead>
           <tbody id="donasiBody"></tbody>
         </table>
+      </div>
+
+      <!-- Tabel Pengeluaran -->
+      <div class="table-wrap hidden" id="wrapPengeluaran">
+        <table>
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>Nama Barang</th>
+              <th>Satuan</th>
+              <th class="num">Volume</th>
+              <th class="num">Harga Satuan</th>
+              <th class="num">Jumlah Harga</th>
+              <th>Tanggal</th>
+            </tr>
+          </thead>
+          <tbody id="pengeluaranBody"></tbody>
+        </table>
+      </div>
+
+      <!-- Navigasi Halaman (15 Baris per Halaman) -->
+      <div class="pagination-bar" id="paginationBar">
+        <button type="button" class="page-btn" id="prevPageBtn" onclick="changePage(-1)" disabled>
+          &larr; Sebelumnya
+        </button>
+        <span class="page-info" id="pageInfo">Halaman 1 dari 1</span>
+        <button type="button" class="page-btn" id="nextPageBtn" onclick="changePage(1)" disabled>
+          Berikutnya &rarr;
+        </button>
       </div>
     </section>
 
@@ -511,205 +687,30 @@
       });
     }
 
-    const CSV_URL =
+    const PEMASUKAN_CSV_URL =
       "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0PbZGpmP46zhEaPFcueYKlMcgaMigCpLW7wYzbcxj7_K9cY1945fCJnAaOgqVNdO5sHxWYmovpau-/pub?output=csv";
+
+    const PENGELUARAN_CSV_URL =
+      "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0PbZGpmP46zhEaPFcueYKlMcgaMigCpLW7wYzbcxj7_K9cY1945fCJnAaOgqVNdO5sHxWYmovpau-/pub?gid=1067549405&single=true&output=csv";
+
+    const ROWS_PER_PAGE = 15;
+
+    const BULAN_NAMES = [
+      "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+      "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+    ];
 
     const statusText = document.getElementById("statusText");
     const donasiBody = document.getElementById("donasiBody");
-    const totalNominalEl = document.getElementById("totalNominal");
-    const totalRowsEl = document.getElementById("totalRows");
+    const pengeluaranBody = document.getElementById("pengeluaranBody");
+    const totalDonasiUangEl = document.getElementById("totalDonasiUang");
+    const totalDonasiMatrialEl = document.getElementById("totalDonasiMatrial");
+    const totalPengeluaranEl = document.getElementById("totalPengeluaran");
+    const sisaSaldoEl = document.getElementById("sisaSaldo");
+    const countPemasukanEl = document.getElementById("countPemasukan");
+    const countPengeluaranEl = document.getElementById("countPengeluaran");
     const searchInput = document.getElementById("searchInput");
     const jenisFilter = document.getElementById("jenisFilter");
-
-    let allRows = [];
-
-    function parseCSV(text) {
-      const rows = [];
-      let row = [];
-      let cell = "";
-      let inQuotes = false;
-
-      for (let i = 0; i < text.length; i++) {
-        const char = text[i];
-        const nextChar = text[i + 1];
-
-        if (inQuotes) {
-          if (char === '"' && nextChar === '"') {
-            cell += '"';
-            i++;
-          } else if (char === '"') {
-            inQuotes = false;
-          } else {
-            cell += char;
-          }
-        } else {
-          if (char === '"') {
-            inQuotes = true;
-          } else if (char === ",") {
-            row.push(cell.trim());
-            cell = "";
-          } else if (char === "\r" && nextChar === "\n") {
-            row.push(cell.trim());
-            rows.push(row);
-            row = [];
-            cell = "";
-            i++;
-          } else if (char === "\n" || char === "\r") {
-            row.push(cell.trim());
-            rows.push(row);
-            row = [];
-            cell = "";
-          } else {
-            cell += char;
-          }
-        }
-      }
-
-      if (cell.length > 0 || row.length > 0) {
-        row.push(cell.trim());
-        rows.push(row);
-      }
-
-      return rows;
-    }
-
-    function parseNumber(val) {
-      if (!val) return 0;
-      const cleaned = String(val).replace(/[^0-9.-]+/g, "");
-      const num = Number(cleaned);
-      return Number.isFinite(num) ? num : 0;
-    }
-
-    function formatRupiah(num) {
-      return new Intl.NumberFormat("id-ID", {
-        style: "currency",
-        currency: "IDR",
-        maximumFractionDigits: 0
-      }).format(num);
-    }
-
-    function populateJenisFilter(rows) {
-      const uniqueJenis = [...new Set(rows.map((r) => r.jenis).filter(Boolean))];
-      uniqueJenis.sort((a, b) => a.localeCompare(b, "id"));
-
-      jenisFilter.innerHTML = '<option value="">Semua Jenis</option>';
-      uniqueJenis.forEach((jenis) => {
-        const opt = document.createElement("option");
-        opt.value = jenis;
-        opt.textContent = jenis;
-        jenisFilter.appendChild(opt);
-      });
-    }
-
-    function renderTable() {
-      const keyword = searchInput.value.trim().toLowerCase();
-      const selectedJenis = jenisFilter.value;
-
-      const filtered = allRows.filter((item) => {
-        const matchesJenis = !selectedJenis || item.jenis === selectedJenis;
-        const searchable = [
-          item.nama,
-          item.jenis,
-          item.alamat,
-          item.namaBarang,
-          item.tanggal
-        ]
-          .join(" ")
-          .toLowerCase();
-        const matchesSearch = !keyword || searchable.includes(keyword);
-        return matchesJenis && matchesSearch;
-      });
-
-      const sumNominal = filtered.reduce((acc, item) => acc + item.nominalNum, 0);
-      totalNominalEl.textContent = formatRupiah(sumNominal);
-      totalRowsEl.textContent = filtered.length;
-
-      if (filtered.length === 0) {
-        donasiBody.innerHTML =
-          '<tr><td colspan="10" style="text-align:center; padding:18px;">Tidak ada data yang cocok.</td></tr>';
-        return;
-      }
-
-      donasiBody.innerHTML = filtered
-        .map((item, idx) => {
-          return `
-            <tr>
-              <td>${idx + 1}</td>
-              <td>${escapeHTML(item.nama)}</td>
-              <td class="num">${item.nominalNum > 0 ? formatRupiah(item.nominalNum) : escapeHTML(item.nominalRaw)}</td>
-              <td>${escapeHTML(item.jenis)}</td>
-              <td>${escapeHTML(item.alamat)}</td>
-              <td>${escapeHTML(item.namaBarang)}</td>
-              <td>${escapeHTML(item.satuan)}</td>
-              <td class="num">${escapeHTML(item.volume)}</td>
-              <td class="num">${escapeHTML(item.hargaSatuan)}</td>
-              <td>${escapeHTML(item.tanggal)}</td>
-            </tr>
-          `;
-        })
-        .join("");
-    }
-
-    function escapeHTML(str) {
-      return String(str ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;");
-    }
-
-    async function loadDonasi() {
-      try {
-        const response = await fetch(CSV_URL);
-        if (!response.ok) {
-          throw new Error("Gagal mengambil data CSV (HTTP " + response.status + ")");
-        }
-
-        const csvText = await response.text();
-        const rawRows = parseCSV(csvText);
-
-        allRows = rawRows
-          .slice(1)
-          .filter((cols) => cols.some((cell) => cell !== ""))
-          .map((cols) => {
-            const nama = cols[0] || "";
-            const nominalRaw = cols[1] || "";
-            const jenis = cols[2] || "";
-            const alamat = cols[3] || "";
-            const namaBarang = cols[4] || "";
-            const satuan = cols[5] || "";
-            const volume = cols[6] || "";
-            const hargaSatuan = cols[7] || "";
-            const tanggal = cols[8] || "";
-
-            return {
-              nama,
-              nominalRaw,
-              nominalNum: parseNumber(nominalRaw),
-              jenis,
-              alamat,
-              namaBarang,
-              satuan,
-              volume,
-              hargaSatuan,
-              tanggal
-            };
-          });
-
-        populateJenisFilter(allRows);
-        renderTable();
-        statusText.textContent = "Data berhasil dimuat dari Google Sheets.";
-      } catch (err) {
-        statusText.textContent = "Terjadi kesalahan: " + err.message;
-      }
-    }
-
-    searchInput.addEventListener("input", renderTable);
-    jenisFilter.addEventListener("change", renderTable);
-
-    loadDonasi();
-  </script>
-
-</body>
-            </html>
-  
+    const bulanFilter = document.getElementById("bulanFilter");
+    const resultBanner = document.getElementById("resultBanner");
+    const resultBannerMain = document.getElementById("resultBa
